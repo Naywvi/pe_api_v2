@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 
-const csocietySchema = new mongoose.Schema({
+const societySchema = new mongoose.Schema({
   //<== main informations
   society_id: { type: Number, index: true, unique: true, default: 0 },
   society_admin: { type: Boolean, unique: true, required: true },
-  society_reference: { type: Number, required: true }, // 1 > client(régis/installateur) | 2 > fournisseur audit | 3 > fournisseur Travaux | 4 > fournisseur Audit + Travaux
+  society_rank_id: { type: Number, required: true },
+  
   //<== informations client
   society_name: { type: String, unique: true, required: true },
   society_owner: { type: String, required: true },
@@ -21,13 +22,13 @@ const csocietySchema = new mongoose.Schema({
 });
 
 // Indexes for unique fields
-csocietySchema.index(
+societySchema.index(
   { society_admin: 1 },
   { unique: true, partialFilterExpression: { society_admin: true } }
 );
 
 // Middleware to handle auto-increment for society_id
-csocietySchema.pre("save", async function (next) {
+societySchema.pre("save", async function (next) {
   const doc = this;
   if (doc.society_admin) {
     //<== if society_admin is true then check if there is already an admin
@@ -38,12 +39,12 @@ csocietySchema.pre("save", async function (next) {
   }
 
   const totalCount = await mongoose
-    .model("CSociety", csocietySchema, "csociety")
+    .model("Society", societySchema, "society")
     .countDocuments();
   doc.society_id = totalCount + 1;
   next();
 });
 
-const SocietyModel = mongoose.model("CSociety", csocietySchema, "csociety");
+const SocietyModel = mongoose.model("Society", societySchema, "society");
 
 module.exports = SocietyModel;

@@ -5,11 +5,13 @@ const userSchema = new mongoose.Schema({
   user_inscription_date: { type: Date, default: Date.now },
   user_id: { type: Number, index: true, unique: true },
   user_token: { type: String, default: "" },
+
   //<== references informations
   user_soc_id: { type: Number, required: true, default: -1 },
   user_soc_referrer: { type: Number, default: -1 },
   user_planning_id: { type: Number, default: -1 },
   user_rank_id: { type: Number, default: 0 },
+
   //<== contact informations
   user_first_name: { type: String, required: true },
   user_last_name: { type: String, required: true },
@@ -19,6 +21,7 @@ const userSchema = new mongoose.Schema({
   user_address: { type: String, required: true },
   user_zip: { type: String, required: true },
   user_pwd: { type: String, required: true },
+  
   //<== other informations
   user_new: { type: Boolean, default: true },
   user_banned: { type: Boolean, default: false },
