@@ -1,4 +1,4 @@
-const error_message = require("../error");
+const error_message = require("../../utils/error");
 const UserModel = require("../../database/models/user");
 const CsocietyModel = require("../../database/models/csociety");
 

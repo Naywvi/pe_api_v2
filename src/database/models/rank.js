@@ -13,7 +13,7 @@ for society / society fournisseur / society main
 6 = >Sous traitant society
 3 = >>auditeur
 4 = >>poseur
-
+..
 */
 
 const mongoose = require("mongoose");
