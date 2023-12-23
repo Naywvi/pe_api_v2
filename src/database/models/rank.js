@@ -4,7 +4,7 @@ for society / society fournisseur / society main
 
 /*
 99 = Super Admin
-1 = Society
+1 = Society owner
 2 = >confirmateur
 3 = >>auditeur
 4 = >>poseur

@@ -86,4 +86,9 @@ module.exports = {
     message: "Already unbanned - Contact an admin",
     mail: email,
   },
+  already_updated: {
+    code: 400,
+    message: "Already updated - Contact an admin",
+    mail: email,
+  },
 };

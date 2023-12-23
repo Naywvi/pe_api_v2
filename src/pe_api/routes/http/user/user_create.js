@@ -2,6 +2,7 @@ const format_query = require("../../../../utils/format_query");
 const error_message = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
 const check_user_request = require("../../../requests/user_request");
+const check_auth = require("../../../auth3/auth");
 
 module.exports = {
   name: "/manage/user/c",
@@ -23,7 +24,7 @@ module.exports = {
       if (!is_valid_token) throw error_message.invalid_token;
 
       //<== check the rank of the user
-      const rank = await is_valid.check_rank(
+      const rank = await check_auth.check_rank(
         request.sender.token,
         request.sender._id
       );
