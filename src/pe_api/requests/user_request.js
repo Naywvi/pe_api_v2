@@ -22,7 +22,6 @@ async function user_exist(user_request, search = false) {
     else return user_exist;
   }
 }
-
 module.exports = {
   create: async (user_request) => {
     try {
@@ -89,6 +88,18 @@ module.exports = {
   },
   unban: async (user_request) => {
     try {
+      //if user already exists
+      const user = await user_exist(user_request);
+
+      //check if user is not already unbanned
+      const banned = await UserModel.updateOne(user, { user_banned: false });
+      if (!banned.modifiedCount) throw error_message.already_unbanned;
+
+      const result = await generate_result(
+        `${user.user_first_name} was unbanned`,
+        user
+      );
+      return result;
     } catch (error) {
       throw error;
     }
