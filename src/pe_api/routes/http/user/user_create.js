@@ -13,7 +13,7 @@ module.exports = {
       const request = format_query.run(req.body);
 
       // <== check if user_society_id is present
-      if (request.user_society_id === undefined)
+      if (request.request.user_society_id === undefined)
         throw error_message.badly_formated;
 
       const is_valid_token = await is_valid.check_validity_token(

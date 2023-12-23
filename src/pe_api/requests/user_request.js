@@ -1,16 +1,53 @@
 const error_message = require("../../utils/error");
 const UserModel = require("../../database/models/user");
 
-async function generate_result(message, object_result) {
+async function generate_result(message, object_result, many = false) {
+  var result_clean_user;
+  if (many) {
+    result_clean_user = [];
+    object_result.forEach((user) => {
+      result_clean_user.push({
+        user_first_name: user.user_first_name,
+        user_last_name: user.user_last_name,
+        user_phone: user.user_phone,
+        user_email: user.user_email,
+        user_zip: user.user_zip,
+        user_birthday: user.user_birthday,
+        user_soc_id: user.user_soc_id,
+      });
+    });
+  } else {
+    result_clean_user = {
+      user_first_name: object_result.user_first_name,
+      user_last_name: object_result.user_last_name,
+      user_phone: object_result.user_phone,
+      user_email: object_result.user_email,
+      user_birthday: object_result.user_birthday,
+      user_zip: object_result.user_zip,
+      user_soc_id: object_result.user_soc_id,
+    };
+  }
+
   const result = {
     message: message,
-    user: object_result,
+    user: result_clean_user,
   };
   return result;
 }
 
-async function user_exist(user_request, search = false) {
-  const user_exist = await UserModel.findOne({
+async function user_exist(
+  user_request,
+  search = false,
+  society_search = false
+) {
+  var user_exist;
+  if (society_search) {
+    user_exist = await UserModel.find({
+      user_soc_id: user_request.request.user_society_id,
+    });
+    return user_exist;
+  }
+  user_exist = await UserModel.findOne({
     user_first_name: user_request.request.user_first_name,
     user_last_name: user_request.request.user_last_name,
     user_birthday: user_request.request.user_birthday,
@@ -22,6 +59,7 @@ async function user_exist(user_request, search = false) {
     else return user_exist;
   }
 }
+
 module.exports = {
   create: async (user_request) => {
     try {
@@ -51,7 +89,19 @@ module.exports = {
   },
   read: async (user_request, query) => {
     try {
-      await user_exist(user_request);
+      var result;
+
+      if (query.visibility === undefined) {
+        // <== if query.visibility is undefined, search for one user
+        const user = await user_exist(user_request);
+        result = await generate_result(`${user.user_first_name}`, user);
+      } else if (query.visibility === "all") {
+        //<== if query.visibility is defined, search for all users
+        const users = await user_exist(user_request, false, true);
+        result = await generate_result(`All users`, users, true);
+      }
+
+      return result;
     } catch (error) {
       throw error;
     }
