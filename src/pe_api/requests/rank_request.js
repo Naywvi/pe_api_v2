@@ -75,6 +75,28 @@ module.exports = {
   },
   delete: async (rank_request) => {
     try {
+      //<== check if the rank already exist
+      const exist_rank = await utils.rank_exist(rank_request, true);
+      if (!exist_rank) throw error_message.not_found;
+      //<== check if the rank is not the default rank
+      if (exist_rank.rank_id === 99) throw error_message.unauthorized;
+
+      //<== delete the rank
+      const delete_rank = await RankModel.deleteOne({
+        rank_id: rank_request.request.rank_id,
+      }).catch(() => {
+        throw error_message.badly_formated;
+      });
+      if (delete_rank.deletedCount === 0) throw error_message.badly_formated;
+
+      //<== format the result
+      const result = await utils.generate_result(
+        `${exist_rank.rank_name} was deleted`,
+        exist_rank,
+        false,
+        true
+      );
+      return result;
     } catch (error) {
       throw error;
     }
