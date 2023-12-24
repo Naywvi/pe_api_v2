@@ -5,8 +5,8 @@ const rank_request = require("../../../requests/rank_request");
 const check_auth = require("../../../auth3/auth");
 
 module.exports = {
-  name: "/manage/rank/delete",
-  description: "Delete a rank - rank 99 only",
+  name: "/manage/rank/disable",
+  description: "Disable a rank - rank 99 only",
   method: "POST",
   run: async (req, res) => {
     try {
@@ -26,8 +26,8 @@ module.exports = {
       );
       if (rank !== 99) throw error_message.unauthorized;
 
-      //<== delete the rank
-      const result = await rank_request.delete(request);
+      //<== disable the rank
+      const result = await rank_request.disable(request);
 
       res.status(200);
       res.json(result);
