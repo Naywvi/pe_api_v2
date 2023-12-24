@@ -1,5 +1,6 @@
 const error_message = require("../../utils/error");
 const UserModel = require("../../database/models/user");
+const RankModel = require("../../database/models/rank");
 
 const permit_modifications = {
   user: [
@@ -62,12 +63,17 @@ module.exports = {
     return modifications;
   },
   // <== format the result of the request
-  generate_result: async (message, object_result, many = false) => {
-    var result_clean_user;
+  generate_result: async (
+    message,
+    object_result,
+    many = false,
+    rank = false
+  ) => {
+    var result_clean;
     if (many) {
-      result_clean_user = [];
+      result_clean = [];
       object_result.forEach((user) => {
-        result_clean_user.push({
+        result_clean.push({
           user_first_name: user.user_first_name,
           user_last_name: user.user_last_name,
           user_phone: user.user_phone,
@@ -77,8 +83,15 @@ module.exports = {
           user_soc_id: user.user_soc_id,
         });
       });
+    } else if (rank) {
+      result_clean = {
+        rank_id: object_result.rank_id,
+        rank_name: object_result.rank_name,
+        rank_description: object_result.rank_desc,
+        rank_active: object_result.rank_active,
+      };
     } else {
-      result_clean_user = {
+      result_clean = {
         user_first_name: object_result.user_first_name,
         user_last_name: object_result.user_last_name,
         user_phone: object_result.user_phone,
@@ -91,7 +104,7 @@ module.exports = {
 
     const result = {
       message: message,
-      user: result_clean_user,
+      user: result_clean,
     };
     return result;
   },
@@ -126,6 +139,26 @@ module.exports = {
     } else if (!search) {
       if (!user_exist) throw error_message.not_found;
       else return user_exist;
+    }
+  },
+  //====================================================================================================
+  //<== check if rank already exists
+  rank_exist: async (rank_request, returned = false) => {
+    try {
+      const exist_rank_name = await RankModel.findOne({
+        rank_name: rank_request.request.rank_name,
+      });
+
+      const exist_rank_id = await RankModel.findOne({
+        rank_id: rank_request.request.rank_id,
+      });
+      if (returned) {
+        if (exist_rank_name) return exist_rank_name;
+        else if (exist_rank_id) return exist_rank_id;
+      } else if (exist_rank_name || exist_rank_id) return true;
+      return false;
+    } catch (error) {
+      throw error;
     }
   },
 };

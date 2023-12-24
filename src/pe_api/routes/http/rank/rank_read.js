@@ -5,8 +5,8 @@ const rank_request = require("../../../requests/rank_request");
 const check_auth = require("../../../auth3/auth");
 
 module.exports = {
-  name: "/manage/rank/create",
-  description: "Create a new rank - rank 99 only",
+  name: "/manage/rank/read",
+  description: "Read a rank - rank 99 only",
   method: "POST",
   run: async (req, res) => {
     try {
@@ -27,7 +27,7 @@ module.exports = {
       if (rank !== 99) throw error_message.unauthorized;
 
       //<== create the rank
-      const result = await rank_request.create(request);
+      const result = await rank_request.read(request);
 
       res.status(200);
       res.json(result);
