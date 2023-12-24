@@ -23,7 +23,6 @@ const csocietySchema = new mongoose.Schema({
   rank_id: { type: Number, required: true },
   rank_name: { type: String, required: true },
   rank_desc: { type: String, required: true },
-  rank_level: { type: Number, required: true },
   rank_active: { type: Boolean, required: true },
 });
 const SocietyModel = mongoose.model("Rank", csocietySchema, "rank");
