@@ -26,7 +26,7 @@ module.exports = {
       );
       if (rank !== 99) throw error_message.unauthorized;
 
-      //<== create the rank
+      //<== update the rank
       const result = await rank_request.update(request);
 
       res.status(200);
