@@ -3,6 +3,7 @@ const error_message = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
 const transformed_client_request = require("../../../requests/transformed_client_request");
 const check_auth = require("../../../auth3/auth");
+const utils = require("../../../requests/utils");
 
 module.exports = {
   name: "/manage/transformed_client/read",
@@ -28,8 +29,8 @@ module.exports = {
         request.sender.token,
         request.sender._id
       );
-      if (rank !== 99 || rank !== 1 || rank !== 2 || rank !== 6)
-        throw error_message.unauthorized;
+      rank_id = await utils.basic_rank_id();
+      if (!rank_id.includes(rank)) throw error_message.unauthorized;
 
       //<== check the society of the user
       const user_society_id = await check_auth.check_society_id(
