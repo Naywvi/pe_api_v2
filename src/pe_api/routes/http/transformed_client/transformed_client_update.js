@@ -1,13 +1,12 @@
 const format_query = require("../../../../utils/format_query");
 const error_message = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
-const check_user_request = require("../../../requests/user_request");
+const transformed_client_request = require("../../../requests/transformed_client_request");
 const check_auth = require("../../../auth3/auth");
-const utils = require("../../../requests/utils");
 
 module.exports = {
-  name: "/manage/user/ban",
-  description: "Ban a user",
+  name: "/manage/transformed_client/update",
+  description: "update a transformed client - rank 99 - 1 - 2 - 6 only",
   method: "POST",
   run: async (req, res) => {
     try {
@@ -29,9 +28,8 @@ module.exports = {
         request.sender.token,
         request.sender._id
       );
-
-      const rank_id = await utils.basic_rank_id();
-      if (!rank_id.includes(rank)) throw error_message.unauthorized;
+      if (rank !== 99 || rank !== 1 || rank !== 2 || rank !== 6)
+        throw error_message.unauthorized;
 
       //<== check the society of the user
       const user_society_id = await check_auth.check_society_id(
@@ -45,8 +43,9 @@ module.exports = {
           //<== check if user is in the same society
           throw error_message.unauthorized;
 
-      //<== ban the user
-      const result = await check_user_request.ban(request);
+      //<== disable the rank
+      const result = await transformed_client_request.update(request);
+
       res.status(200);
       res.json(result);
     } catch (error) {

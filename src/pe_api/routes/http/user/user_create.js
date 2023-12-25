@@ -3,6 +3,7 @@ const error_message = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
 const check_user_request = require("../../../requests/user_request");
 const check_auth = require("../../../auth3/auth");
+const utils = require("../../../requests/utils");
 
 module.exports = {
   name: "/manage/user/c",
@@ -28,8 +29,9 @@ module.exports = {
         request.sender.token,
         request.sender._id
       );
-      if (rank !== 99 && rank !== 1 && rank !== 2 && rank !== 6)
-        throw error_message.unauthorized;
+
+      rank_id = await utils.basic_rank_id();
+      if (!rank_id.includes(rank)) throw error_message.unauthorized;
 
       //<== create the user
       const result = await check_user_request.create(request);

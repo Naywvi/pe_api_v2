@@ -3,6 +3,7 @@ const error_message = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
 const check_user_request = require("../../../requests/user_request");
 const check_auth = require("../../../auth3/auth");
+const utils = require("../../../requests/utils");
 
 module.exports = {
   name: "/manage/user/update",
@@ -56,14 +57,11 @@ module.exports = {
       var result;
 
       if (same_user) {
-        console.log("same_user");
         result = await check_user_request.update(request);
       } else if (rank === 99) {
-        console.log("super admin");
         //<== super admin bypass same user check
         result = await check_user_request.update(request, rank);
       } else if (rank === 2 || rank === 1 || rank === 6) {
-        console.log("confirmateur");
         //<== confirmateur bypass same user check
         if (user_society_id !== request.request.user_society_id)
           throw error_message.unauthorized;

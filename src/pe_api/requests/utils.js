@@ -161,4 +161,7 @@ module.exports = {
       throw error;
     }
   },
+  basic_rank_id: async () => {
+    return [99, 1, 2, 6];
+  },
 };
