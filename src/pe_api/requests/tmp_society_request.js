@@ -45,6 +45,29 @@ module.exports = {
   },
   read: async (user_request) => {
     try {
+      //<== check if the society already exist
+      const society_exist = await tmp_society_exist(user_request);
+      if (!society_exist) throw error_message.not_found;
+
+      //<== read the society
+      const tmp_society = await TempSocietyModel.findOne({
+        temp_society_owner: user_request.request.temp_society_owner,
+        temp_society_siret: user_request.request.temp_society_siret,
+        temp_society_sirene: user_request.request.temp_society_sirene,
+      });
+      if (!tmp_society) throw error_message.not_found;
+
+      //<== return the result
+      const result = await utils.generate_result(
+        `${tmp_society.temp_society_name} was found`,
+        tmp_society,
+        false,
+        false,
+        false,
+        false,
+        true
+      );
+      return result;
     } catch (error) {
       throw error;
     }

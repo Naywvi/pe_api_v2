@@ -29,7 +29,7 @@ module.exports = {
       const rank_id = await utils.moderator_rank_id();
       if (!rank_id.includes(rank)) throw error_message.unauthorized;
 
-      //<== create the rank
+      //<== create the tmp society
       const result = await tmp_society_request.create(request);
 
       res.status(200);

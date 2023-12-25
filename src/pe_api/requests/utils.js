@@ -125,6 +125,15 @@ module.exports = {
         temp_society_mail: object_result.temp_society_mail,
         temp_society_owner: object_result.temp_society_owner,
         temp_society_fix: object_result.temp_society_fix,
+        temp_society_siret: object_result.temp_society_siret,
+        temp_society_sirene: object_result.temp_society_sirene,
+        temp_society_tva: object_result.temp_society_tva,
+        temp_society_legal_status: object_result.temp_society_legal_status,
+        temp_society_naf: object_result.temp_society_naf,
+        temp_society_beneficiary: object_result.temp_society_beneficiary,
+        temp_society_address: object_result.temp_society_address,
+        temp_society_city: object_result.temp_society_city,
+        temp_society_zip: object_result.temp_society_zip,
       };
     } else {
       result_clean = {
