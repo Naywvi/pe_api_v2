@@ -26,12 +26,6 @@ module.exports = {
       );
       if (rank !== 99) throw error_message.unauthorized;
 
-      //<== check the society of the user
-      const user_society_id = await check_auth.check_society_id(
-        request.sender.token,
-        request.sender._id
-      );
-
       //<== disable the rank
       const result = await transformed_client_request.delete(request);
 

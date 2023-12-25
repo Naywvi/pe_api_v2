@@ -26,7 +26,7 @@ module.exports = {
         request.sender._id
       );
 
-      rank_id = await utils.basic_rank_id();
+      const rank_id = await utils.basic_rank_id();
       if (!rank_id.includes(rank)) throw error_message.unauthorized;
 
       //<== check the society of the user
@@ -35,13 +35,7 @@ module.exports = {
         request.sender._id
       );
 
-      //<== super admin bypass same society check
-      if (rank !== 99)
-        if (user_society_id !== request.request.user_society_id)
-          //<== check if user is in the same society
-          throw error_message.unauthorized;
-
-      //<== disable the rank
+      //<== create the transformed client
       const result = await transformed_client_request.create(
         request,
         user_society_id
