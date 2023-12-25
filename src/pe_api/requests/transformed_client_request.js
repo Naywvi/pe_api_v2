@@ -1,7 +1,62 @@
 const error_message = require("../../utils/error");
 const transformed_client_Model = require("../../database/models/transformed_client");
 const utils = require("./utils");
-
+const format_query = require("../../utils/format_query");
+const permit_modifications = {
+  society_and_confirmateur: [
+    "transformedclient_status",
+    "transformedclient_help",
+    "transformedclient_first_name",
+    "transformedclient_last_name",
+    "transformedclient_phone",
+    "transformedclient_mail",
+    "transformedclient_city",
+    "transformedclient_zip",
+    "transformedclient_habitation",
+    "transformedclient_type_residence",
+    "transformedclient_type_heating",
+    "transformedclient_type_boiler",
+    "transformedclient_fiscal_years",
+    "transformedclient_property_tax",
+    "transformedclient_construction_date",
+    "transformedclient_metter_habitable_surface",
+    "transformedclient_isolation_type",
+    "transformedclient_isolation_surface",
+  ],
+  super_admin: [
+    "transformedclient_society_id",
+    "transformedclient_status",
+    "transformedclient_help",
+    "transformedclient_first_name",
+    "transformedclient_last_name",
+    "transformedclient_phone",
+    "transformedclient_mail",
+    "transformedclient_city",
+    "transformedclient_zip",
+    "transformedclient_habitation",
+    "transformedclient_type_residence",
+    "transformedclient_type_heating",
+    "transformedclient_type_boiler",
+    "transformedclient_fiscal_years",
+    "transformedclient_property_tax",
+    "transformedclient_construction_date",
+    "transformedclient_metter_habitable_surface",
+    "transformedclient_isolation_type",
+    "transformedclient_isolation_surface",
+  ],
+};
+async function check_modifications(user_request, rank) {
+  var modifications = {};
+  permit_modifications[rank].forEach((element) => {
+    if (
+      user_request.request.update[element] !== undefined &&
+      user_request.request.update[element] !== ""
+    ) {
+      modifications[element] = user_request.request.update[element];
+    }
+  });
+  return modifications;
+}
 async function exist_transformed_client(req) {
   try {
     const result = await transformed_client_Model.findOne({
@@ -54,8 +109,49 @@ module.exports = {
       throw error;
     }
   },
-  update: async (transformed_client_request) => {
+  update: async (transformed_client_request, rank) => {
     try {
+      // <== check if transformed_client already exists
+      const exist = await exist_transformed_client(
+        transformed_client_request.request
+      );
+      if (!exist) throw error_message.not_found;
+
+      // <== check if the user can update the transformed_client
+      var permissions;
+      if (rank === 99) {
+        permissions = await check_modifications(
+          transformed_client_request,
+          "super_admin"
+        );
+      } else if (rank === 1 || rank === 6 || rank === 6) {
+        permissions = await check_modifications(
+          transformed_client_request,
+          "society_and_confirmateur"
+        );
+      } else throw error_message.unauthorized;
+
+      //<== delete the update key
+      delete transformed_client_request.request.update;
+
+      //<== update the transformed_client
+      const transformed_client = await transformed_client_Model.updateOne(
+        transformed_client_request.request,
+        permissions
+      );
+      if (!transformed_client.modifiedCount)
+        throw error_message.already_updated;
+
+      // <== generate the result
+      const result = await utils.generate_result(
+        `${transformed_client_request.request.transformedclient_first_name} was updated`,
+        transformed_client_request.request,
+        false,
+        false,
+        true
+      );
+
+      return result;
     } catch (error) {
       throw error;
     }
