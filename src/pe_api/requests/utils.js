@@ -67,7 +67,8 @@ module.exports = {
     message,
     object_result,
     many = false,
-    rank = false
+    rank = false,
+    transformed_client = false
   ) => {
     var result_clean;
     if (many) {
@@ -89,6 +90,16 @@ module.exports = {
         rank_name: object_result.rank_name,
         rank_description: object_result.rank_desc,
         rank_active: object_result.rank_active,
+      };
+    } else if (transformed_client) {
+      result_clean = {
+        transformedclient_first_name:
+          object_result.transformedclient_first_name,
+        transformedclient_last_name: object_result.transformedclient_last_name,
+        transformedclient_phone: object_result.transformedclient_phone,
+        transformedclient_mail: object_result.transformedclient_mail,
+        transformedclient_city: object_result.transformedclient_city,
+        transformedclient_zip: object_result.transformedclient_zip,
       };
     } else {
       result_clean = {

@@ -14,10 +14,6 @@ module.exports = {
       //<== format & check the request
       const request = format_query.run(req.body);
 
-      // <== check if user_society_id is present
-      if (request.request.user_society_id === undefined)
-        throw error_message.badly_formated;
-
       const is_valid_token = await is_valid.check_validity_token(
         request.sender.token,
         request.sender._id
@@ -46,7 +42,10 @@ module.exports = {
           throw error_message.unauthorized;
 
       //<== disable the rank
-      const result = await transformed_client_request.create(request);
+      const result = await transformed_client_request.create(
+        request,
+        user_society_id
+      );
 
       res.status(200);
       res.json(result);

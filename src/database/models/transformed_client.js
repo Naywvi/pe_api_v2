@@ -3,10 +3,20 @@ const mongoose = require("mongoose");
 const TransformedClientSchema = new mongoose.Schema({
   //<== main informations
   transformedclient_id: { type: Number, index: true, unique: true },
-  transformedclient_help: { type: Boolean, required: true },
   transformedclient_token: { type: String, default: "" },
-  //<== contact informations
+  transformedclient_status: {
+    type: String,
+    default: "pending",
+    required: true,
+  },
+  transformedclient_creation_date: { type: Date, default: Date.now() },
+  transformedclient_update_date: { type: Date, default: Date.now() },
 
+  //<== client informations
+  transformedclient_society_id: { type: Number, required: true },
+  transformedclient_help: { type: Boolean, required: true },
+
+  //<== contact informations
   transformedclient_first_name: { type: String, required: true },
   transformedclient_last_name: { type: String, required: true },
   transformedclient_phone: { type: Number, required: true },
@@ -39,6 +49,10 @@ TransformedClientSchema.pre("save", async function (next) {
   next();
 });
 
-const TransformedClientModel = mongoose.model("Transformedclient", TransformedClientSchema, "transformedclient");
+const TransformedClientModel = mongoose.model(
+  "Transformedclient",
+  TransformedClientSchema,
+  "transformedclient"
+);
 
 module.exports = TransformedClientModel;
