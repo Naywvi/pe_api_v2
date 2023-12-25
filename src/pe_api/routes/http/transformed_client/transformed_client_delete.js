@@ -26,7 +26,7 @@ module.exports = {
       );
       if (rank !== 99) throw error_message.unauthorized;
 
-      //<== disable the rank
+      //<== delete the transformed_client
       const result = await transformed_client_request.delete(request);
 
       res.status(200);

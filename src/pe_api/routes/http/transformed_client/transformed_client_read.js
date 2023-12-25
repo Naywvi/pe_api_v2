@@ -40,7 +40,7 @@ module.exports = {
           //<== check if user is in the same society
           throw error_message.unauthorized;
 
-      //<== disable the rank
+      //<== read the transformed_client
       const result = await transformed_client_request.read(request, req.query);
 
       res.status(200);
