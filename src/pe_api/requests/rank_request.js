@@ -1,6 +1,5 @@
 const error_message = require("../../utils/error");
 const RankModel = require("../../database/models/rank");
-const format_query = require("../../utils/format_query");
 const utils = require("./utils");
 
 module.exports = {

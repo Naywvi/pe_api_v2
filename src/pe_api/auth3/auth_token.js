@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const error_message = require("../../utils/error");
 
 module.exports = {
   //<== check if token is valid

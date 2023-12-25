@@ -69,7 +69,8 @@ module.exports = {
     many = false,
     rank = false,
     transformed_client = false,
-    transformed_client_many = false
+    transformed_client_many = false,
+    tmp_society = false
   ) => {
     var result_clean;
     if (many) {
@@ -118,6 +119,13 @@ module.exports = {
           transformedclient_zip: transformed_client.transformedclient_zip,
         });
       });
+    } else if (tmp_society) {
+      result_clean = {
+        temp_society_name: object_result.temp_society_name,
+        temp_society_mail: object_result.temp_society_mail,
+        temp_society_owner: object_result.temp_society_owner,
+        temp_society_fix: object_result.temp_society_fix,
+      };
     } else {
       result_clean = {
         user_first_name: object_result.user_first_name,
@@ -191,5 +199,8 @@ module.exports = {
   },
   basic_rank_id: async () => {
     return [99, 1, 2, 6];
+  },
+  moderator_rank_id: async () => {
+    return [99, 98];
   },
 };
