@@ -68,7 +68,8 @@ module.exports = {
     object_result,
     many = false,
     rank = false,
-    transformed_client = false
+    transformed_client = false,
+    transformed_client_many = false
   ) => {
     var result_clean;
     if (many) {
@@ -93,6 +94,7 @@ module.exports = {
       };
     } else if (transformed_client) {
       result_clean = {
+        transformedclient_status: object_result.transformedclient_status,
         transformedclient_first_name:
           object_result.transformedclient_first_name,
         transformedclient_last_name: object_result.transformedclient_last_name,
@@ -101,6 +103,21 @@ module.exports = {
         transformedclient_city: object_result.transformedclient_city,
         transformedclient_zip: object_result.transformedclient_zip,
       };
+    } else if (transformed_client_many) {
+      result_clean = [];
+      object_result.forEach((transformed_client) => {
+        result_clean.push({
+          transformedclient_status: transformed_client.transformedclient_status,
+          transformedclient_first_name:
+            transformed_client.transformedclient_first_name,
+          transformedclient_last_name:
+            transformed_client.transformedclient_last_name,
+          transformedclient_phone: transformed_client.transformedclient_phone,
+          transformedclient_mail: transformed_client.transformedclient_mail,
+          transformedclient_city: transformed_client.transformedclient_city,
+          transformedclient_zip: transformed_client.transformedclient_zip,
+        });
+      });
     } else {
       result_clean = {
         user_first_name: object_result.user_first_name,
@@ -115,7 +132,7 @@ module.exports = {
 
     const result = {
       message: message,
-      user: result_clean,
+      "user(s)": result_clean,
     };
     return result;
   },

@@ -1,7 +1,7 @@
 const error_message = require("../../utils/error");
 const transformed_client_Model = require("../../database/models/transformed_client");
 const utils = require("./utils");
-const format_query = require("../../utils/format_query");
+
 const permit_modifications = {
   society_and_confirmateur: [
     "transformedclient_status",
@@ -195,9 +195,48 @@ module.exports = {
       throw error;
     }
   },
-  read: async (transformed_client_request) => {
+  read: async (transformed_client_request, query = undefined) => {
     try {
-      return "a";
+      // <== check if transformed_client already exists
+      const exist = await exist_transformed_client(
+        transformed_client_request.request
+      );
+      if (!exist) throw error_message.not_found;
+      var result;
+      if (query.visibility === "all") {
+        // <== read the transformed_client of all the society
+        const transformed_client = await transformed_client_Model.find({
+          transformedclient_society_id:
+            transformed_client_request.request.transformedclient_society_id,
+        });
+        if (!transformed_client) throw error_message.not_found;
+
+        // <== generate the result
+        result = await utils.generate_result(
+          `The transformed clients of the society ${transformed_client_request.request.transformedclient_society_id} was found`,
+          transformed_client,
+          false,
+          false,
+          false,
+          true
+        );
+      } else {
+        const transformed_client = await transformed_client_Model.findOne(
+          transformed_client_request.request
+        );
+        if (!transformed_client) throw error_message.not_found;
+
+        // <== generate the result
+        result = await utils.generate_result(
+          `${transformed_client_request.request.transformedclient_first_name} was found`,
+          transformed_client,
+          false,
+          false,
+          true
+        );
+      }
+
+      return result;
     } catch (error) {
       throw error;
     }

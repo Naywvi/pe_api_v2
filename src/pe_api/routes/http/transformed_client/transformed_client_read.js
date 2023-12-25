@@ -36,7 +36,7 @@ module.exports = {
 
       //<== super admin bypass same society check
       if (rank !== 99)
-        if (user_society_id !== request.request.user_society_id)
+        if (user_society_id !== request.request.transformedclient_society_id)
           //<== check if user is in the same society
           throw error_message.unauthorized;
 
