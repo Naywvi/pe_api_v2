@@ -6,7 +6,7 @@ for society / society fournisseur / society main
 99 = Super Admin
 98 = Moderator (just for audit)
 
-1 = Society owner
+1 = Society 
 2 = >confirmateur
 3 = >>auditeur
 4 = >>poseur

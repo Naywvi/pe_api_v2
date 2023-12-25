@@ -91,4 +91,9 @@ module.exports = {
     message: "Already updated - Contact an admin",
     mail: email,
   },
+  no_modifications: {
+    code: 400,
+    message: "No modifications - Contact an admin",
+    mail: email,
+  },
 };

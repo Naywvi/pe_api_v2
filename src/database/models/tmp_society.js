@@ -6,6 +6,8 @@ const societySchema = new mongoose.Schema({
   temp_society_id: { type: Number, index: true, unique: true, default: 0 },
   temp_society_owner: { type: String, required: true },
   temp_society_audited: { type: Boolean, default: false, required: true },
+  temp_society_comment: { type: String, default: "" },
+  temp_society_rank: { type: Number, default: 0, required: true },
 
   // contact informations
   temp_society_name: { type: String, unique: true, required: true },
@@ -38,6 +40,10 @@ societySchema.pre("save", async function (next) {
   next();
 });
 
-const SocietyModel = mongoose.model("Society", societySchema, "society");
+const SocietyModel = mongoose.model(
+  "Tmp_society",
+  societySchema,
+  "tmp_society"
+);
 
 module.exports = SocietyModel;
