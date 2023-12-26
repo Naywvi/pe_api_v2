@@ -70,7 +70,8 @@ module.exports = {
     rank = false,
     transformed_client = false,
     transformed_client_many = false,
-    tmp_society = false
+    tmp_society = false,
+    society = false
   ) => {
     var result_clean;
     if (many) {
@@ -135,6 +136,22 @@ module.exports = {
         temp_society_city: object_result.temp_society_city,
         temp_society_zip: object_result.temp_society_zip,
       };
+    } else if (society) {
+      result_clean = {
+        society_name: object_result.society_name,
+        society_mail: object_result.society_mail,
+        society_owner: object_result.society_owner,
+        society_fix: object_result.society_fix,
+        society_siret: object_result.society_siret,
+        society_sirene: object_result.society_sirene,
+        society_tva: object_result.society_tva,
+        society_legal_status: object_result.society_legal_status,
+        society_naf: object_result.society_naf,
+        society_beneficiary: object_result.society_beneficiary,
+        society_address: object_result.society_address,
+        society_city: object_result.society_city,
+        society_zip: object_result.society_zip,
+      };
     } else {
       result_clean = {
         user_first_name: object_result.user_first_name,
@@ -149,7 +166,7 @@ module.exports = {
 
     const result = {
       message: message,
-      "user(s)": result_clean,
+      result: result_clean,
     };
     return result;
   },
