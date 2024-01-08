@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const error_message = require("../../utils/error");
+const deCrypt = require("./decryt");
+const bcrypt = require("bcrypt");
+
 
 module.exports = {
   //<== check the rank of the user
@@ -28,5 +31,17 @@ module.exports = {
       }
     }
     return true;
+  },
+  login: async (login, password) => {
+    //<== check if user exist
+    const user = await mongoose.model("User").findOne({ user_mail: login });
+    if (!user) return false;
+
+    //<== check if password is correct
+    //> Decrypt password
+    const deCrypte_password = await deCrypt.decrypt(password);
+    const pass_validation = await bcrypt.compare(deCrypte_password, user.user_pwd);
+    if (!pass_validation) return false;
+    return user;
   },
 };

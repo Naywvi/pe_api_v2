@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const bodyParser = require('body-parser');
 
 module.exports = async (app) => {
   app.use(express.json());
@@ -9,7 +10,7 @@ module.exports = async (app) => {
     fs.readdirSync(folderPath).forEach(async (file) => {
       const filePath = path.join(folderPath, file);
       const stat = fs.statSync(filePath);
-
+      app.use(bodyParser.urlencoded({ extended: true }));
       if (stat.isDirectory()) {
         // if is a directory
         loadRoutesRecursively(app, filePath);

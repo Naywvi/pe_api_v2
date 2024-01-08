@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   //<== main informations
   user_inscription_date: { type: Date, default: Date.now },
   user_id: { type: Number, index: true, unique: true },
-  user_token: { type: String, default: "" },
+  user_token: { type: String, default: "", unique: true },
 
   //<== references informations
   user_soc_id: { type: Number, required: true, default: -1 },
@@ -43,9 +43,9 @@ userSchema.pre("save", async function (next) {
     if (admin) return false;
   }
 
-  doc.user_token =
-    Math.random().toString(36).substring(2, 15) +
-    Math.random().toString(36).substring(2, 15);
+  // doc.user_token =
+  //   Math.random().toString(36).substring(2, 15) +
+  //   Math.random().toString(36).substring(2, 15);
   const totalCount = await mongoose
     .model("User", userSchema, "user")
     .countDocuments();
