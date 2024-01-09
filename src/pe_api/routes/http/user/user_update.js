@@ -3,7 +3,6 @@ const error_message = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
 const check_user_request = require("../../../requests/user_request");
 const check_auth = require("../../../auth3/auth");
-const utils = require("../../../requests/utils");
 
 module.exports = {
   name: "/manage/user/update",

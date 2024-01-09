@@ -3,7 +3,6 @@ const error_message = require("../../utils/error");
 const deCrypt = require("./decryt");
 const bcrypt = require("bcrypt");
 
-
 module.exports = {
   //<== check the rank of the user
   check_rank: async (token, _id) => {
@@ -40,7 +39,10 @@ module.exports = {
     //<== check if password is correct
     //> Decrypt password
     const deCrypte_password = await deCrypt.decrypt(password);
-    const pass_validation = await bcrypt.compare(deCrypte_password, user.user_pwd);
+    const pass_validation = await bcrypt.compare(
+      deCrypte_password,
+      user.user_pwd
+    );
     if (!pass_validation) return false;
     return user;
   },
