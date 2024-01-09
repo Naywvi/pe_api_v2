@@ -8,23 +8,18 @@ module.exports = {
       //if create user request is valid, check if user already exists
       await utils.user_exist(user_request, true);
 
-      //cancel bypass admin
-      if (user_request.request.user_rank_id === 99)
-        throw error_message.unauthorized;
-
       //check the syntax of the user request
-      const user = { ...user_request.request, user_admin: false };
+      const user = {
+        ...user_request,
+        user_admin: false,
+        user_inscription_date: Date.now(),
+      };
       const new_user = new UserModel(user);
-      const save_user = await new_user.save().catch(() => {
-        throw error_message.badly_formated;
+      await new_user.save().catch((err) => {
+        throw err;
       });
 
-      const result = await utils.generate_result(
-        `${save_user.user_first_name} was created`,
-        save_user
-      );
-
-      return result;
+      return `${user_request.user_first_name} was created`;
     } catch (error) {
       throw error;
     }

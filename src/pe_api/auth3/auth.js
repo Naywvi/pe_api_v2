@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const error_message = require("../../utils/error");
 const deCrypt = require("./decryt");
 const bcrypt = require("bcrypt");
+const userModel = require("../../database/models/user");
 
 module.exports = {
   //<== check the rank of the user
@@ -30,6 +31,17 @@ module.exports = {
       }
     }
     return true;
+  },
+  user: async (user, token) => {
+    const user_exist = await userModel.findOne({
+      user_first_name: user.first_name,
+      user_last_name: user.last_name,
+      user_mail: user.mail,
+      user_rank_id: user.rank_id,
+      user_token: token,
+    });
+    if (!user_exist) return false;
+    return user_exist;
   },
   login: async (login, password) => {
     //<== check if user exist

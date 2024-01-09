@@ -190,9 +190,9 @@ module.exports = {
       return user_exist;
     } else {
       user_exist = await UserModel.findOne({
-        user_first_name: user_request.request.user_first_name,
-        user_last_name: user_request.request.user_last_name,
-        user_birthday: user_request.request.user_birthday,
+        user_mail: user_request.user_mail,
+        // user_first_name: user_request.user_first_name,
+        // user_last_name: user_request.user_last_name,
       });
     }
 

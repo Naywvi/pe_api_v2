@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   //<== main informations
-  user_inscription_date: { type: Date, default: Date.now },
+  user_inscription_date: { type: Date },
   user_id: { type: Number, index: true, unique: true },
   user_token: { type: String, default: "", unique: true },
 
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   user_last_name: { type: String, required: true }, //*
   user_mail: { type: String, required: true }, //*
   user_phone: { type: Number, required: true }, //*
-  user_birthday: { type: Date },
+  user_birthday: { type: Date, required: true }, //*
   user_address: { type: String, required: true }, //*
   user_zip: { type: Number, required: true }, //*
   user_pwd: { type: String, required: true }, //*
@@ -43,9 +43,9 @@ userSchema.pre("save", async function (next) {
     if (admin) return false;
   }
 
-  // doc.user_token =
-  //   Math.random().toString(36).substring(2, 15) +
-  //   Math.random().toString(36).substring(2, 15);
+  doc.user_token =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
   const totalCount = await mongoose
     .model("User", userSchema, "user")
     .countDocuments();
