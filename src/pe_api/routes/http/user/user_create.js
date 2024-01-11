@@ -1,9 +1,8 @@
 const request = require("../../../auth3/decrypt_for_all_request");
-const format_query = require("../../../../utils/format_query");
 const error_message = require("../../../../utils/error");
-const is_valid = require("../../../auth3/auth_token");
 const check_user_request = require("../../../requests/user_request");
 const utils = require("../../../requests/utils");
+const deCrypt = require("../../../auth3/decryt");
 
 module.exports = {
   name: "/manage/user/create",
@@ -21,8 +20,15 @@ module.exports = {
         "user_city",
         "user_pwd",
       ];
+
       let request_veracity = await request.verify_request(req, data);
-      console.log(request_veracity);
+      console.log(request_veracity)
+      //> Decrypt password
+      const decrypt_password = await deCrypt.decrypt(request_veracity.user_pwd);
+      console.log(decrypt_password)
+      //> attibute the decrypted password to the parsed request
+      request_veracity.user_pwd = decrypt_password;
+
       //<== check the rank of the user
       const rank = request_veracity.sender.user_rank_id;
 
@@ -39,6 +45,7 @@ module.exports = {
       res.status(200);
       res.json(result);
     } catch (error) {
+      console.log(error)
       res.status(400);
       res.json(error);
     } finally {

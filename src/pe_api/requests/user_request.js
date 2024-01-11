@@ -1,6 +1,7 @@
 const error_message = require("../../utils/error");
 const UserModel = require("../../database/models/user");
 const utils = require("./utils");
+const { user } = require("../auth3/auth");
 
 module.exports = {
   create: async (user_request) => {
@@ -24,26 +25,11 @@ module.exports = {
       throw error;
     }
   },
-  read: async (user_request, query = false, same_user = false) => {
+  read_society: async (user_request) => {
     try {
-      var result;
-      if (same_user) {
-        //<== check is user is himself
-        const user = await utils.user_exist(user_request, false, false, true);
-        const result = await utils.generate_result(
-          `${user.user_first_name}`,
-          user
-        );
-        return result;
-      } else if (query.visibility === undefined || query === false) {
-        // <== if query.visibility is undefined, search for one user
-        const user = await utils.user_exist(user_request);
-        result = await utils.generate_result(`${user.user_first_name}`, user);
-      } else if (query.visibility === "all") {
-        //<== if query.visibility is defined, search for all users
-        const users = await utils.user_exist(user_request, false, true);
-        result = await utils.generate_result(`All users`, users, true);
-      }
+      let result = await UserModel.find({ user_soc_id: user_request.sender.user_soc_id });
+      //<== if query.visibility is defined, search for all users
+      result = await utils.generate_result(`All users`, result, true);
       return result;
     } catch (error) {
       throw error;
@@ -114,20 +100,14 @@ module.exports = {
       throw error;
     }
   },
-  ban: async (user_request) => {
+  ban_one: async (user_request) => {
     try {
-      //if user already exists
-      const user = await utils.user_exist(user_request);
-
       //check if user is not already banned
-      const banned = await UserModel.updateOne(user, { user_request });
+
+      const banned = await UserModel.updateOne({ user_id: user_request.user_id }, { user_banned: true });
       if (!banned.modifiedCount) throw error_message.already_banned;
 
-      const result = await utils.generate_result(
-        `${user.user_first_name} was banned`,
-        user
-      );
-      return result;
+      return true;
     } catch (error) {
       throw error;
     }
@@ -146,6 +126,18 @@ module.exports = {
         user
       );
       return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  add_token: async (user_id, token) => {
+    try {
+      const user = await UserModel.updateOne(
+        { _id: user_id },
+        { user_token: token }
+      );
+      if (!user.modifiedCount) throw error_message.bad_request;
+      return true;
     } catch (error) {
       throw error;
     }

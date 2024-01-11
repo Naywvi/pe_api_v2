@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
   user_mail: { type: String, required: true }, //*
   user_phone: { type: Number, required: true }, //*
   user_birthday: { type: Date, required: true }, //*
+  user_city: { type: String, required: true },
   user_address: { type: String, required: true }, //*
   user_zip: { type: Number, required: true }, //*
   user_pwd: { type: String, required: true }, //*

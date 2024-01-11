@@ -80,11 +80,19 @@ module.exports = {
         result_clean.push({
           user_first_name: user.user_first_name,
           user_last_name: user.user_last_name,
+          user_address: user.user_address,
+          user_city: user.user_city,
+          user_inscription_date: user.user_inscription_date,
+          user_banned: user.user_banned,
+          user_planning_id: user.user_planning_id,
+          user_new: user.user_new,
           user_phone: user.user_phone,
-          user_email: user.user_email,
+          user_mail: user.user_mail,
           user_zip: user.user_zip,
           user_birthday: user.user_birthday,
           user_soc_id: user.user_soc_id,
+          user_id: user._id,
+
         });
       });
     } else if (rank) {

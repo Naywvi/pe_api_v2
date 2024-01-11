@@ -34,10 +34,10 @@ module.exports = {
   },
   user: async (user, token) => {
     const user_exist = await userModel.findOne({
-      user_first_name: user.first_name,
-      user_last_name: user.last_name,
-      user_mail: user.mail,
-      user_rank_id: user.rank_id,
+      user_first_name: user.user_first_name,
+      user_last_name: user.user_last_name,
+      user_mail: user.user_mail,
+      user_rank_id: user.user_rank_id,
       user_token: token,
     });
     if (!user_exist) return false;

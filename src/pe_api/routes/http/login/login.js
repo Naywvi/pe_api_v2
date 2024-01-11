@@ -1,53 +1,54 @@
-const { body, validationResult } = require("express-validator");
+const { body, validationResult } = require('express-validator');
 const error_message = require("../../../../utils/error");
 const check_auth = require("../../../auth3/auth");
+async function generate_temp_token() {
+    const currentDate = Date.now();
+    const randomPart1 = Math.random().toString(36).substring(2, 15);
+    const randomPart2 = Math.random().toString(36).substring(2, 15);
+
+    const result = await currentDate + randomPart1 + randomPart2;
+    return result;
+}
+
 module.exports = {
-  name: "/auth/login",
-  description: "Ban a user",
-  method: "POST",
-  run: async (req, res) => {
-    try {
-      //> Validation des données
-      const validationRules = [
-        body("login").isLength({ min: 5 }).escape(),
-        body("password").isLength({ min: 8 }).escape(),
-      ];
-      //> Vérification des données
-      validationRules.forEach((validationRule) =>
-        validationRule(req, res, () => {})
-      );
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        throw error_message.bad_request;
-      }
+    name: "/auth/login",
+    description: "Ban a user",
+    method: "POST",
+    run: async (req, res) => {
+        try {
+            //> Validation des données
+            const validationRules = [
+                body('login').isLength({ min: 5 }).escape(),
+                body('password').isLength({ min: 8 }).escape(),
+            ];
 
-      //> Vérification de l'existence de l'utilisateur
-      const postData = {
-        login: req.body.login,
-        password: req.body.password,
-      };
+            //> Vérification des données
+            validationRules.forEach(validationRule => validationRule(req, res, () => { }));
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                throw error_message.bad_request;
+            }
 
-      const user_exist = await check_auth.login(
-        postData.login,
-        postData.password
-      );
-      if (!user_exist) throw error_message.unauthorized;
+            //> Vérification de l'existence de l'utilisateur
+            const postData = {
+                login: req.body.login,
+                password: req.body.password,
+            };
 
-      //> Retourne les informations de l'utilisateur
-      const result = {
-        first_name: user_exist.user_first_name,
-        last_name: user_exist.user_last_name,
-        mail: user_exist.user_mail,
-        rank_id: user_exist.user_rank_id,
-      };
-      res.json(result);
-      res.status(200);
-    } catch (error) {
-      console.log(error);
-      res.status(400);
-      res.json(error);
-    } finally {
-      res.end();
-    }
-  },
+            //> Vérification de l'existence de l'utilisateur & compare bcrypt password
+            const user_exist = await check_auth.login(postData.login, postData.password);
+            if (!user_exist) throw error_message.unauthorized;
+
+            //> Si y a un soucis avec le token, on le gère ici !
+            user_exist.user_token = await generate_temp_token();
+
+            await res.json(user_exist);
+            await res.status(200);
+        } catch (error) {
+            res.status(400);
+            res.json(error);
+        } finally {
+            res.end();
+        }
+    },
 };

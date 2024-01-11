@@ -11,12 +11,15 @@ module.exports = {
       data.forEach((element) => {
         validationRules.push(body(element).notEmpty().escape());
       });
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) throw error_message.bad_request;
     }
+
     //> Decrypt the request & Parse
     const decrypt_request = await deCrypt.decrypt(req.body.data);
-
     const parsed_request = JSON.parse(decrypt_request);
     if (!parsed_request) throw error_message.bad_request;
+
     const jwt_token = parsed_request.sender.authentified;
 
     //> Decrypt the cookie / JWT token
@@ -25,14 +28,9 @@ module.exports = {
 
     //> Check if the user exist
     const { iat, ...new_payload } = decrypt_sender;
+
     const user_exist = await check_auth.user(new_payload, jwt_token);
     if (!user_exist) throw error_message.unauthorized;
-
-    //> Decrypt password
-    const decrypt_password = await deCrypt.decrypt(parsed_request.user_pwd);
-
-    //> attibute the decrypted password to the parsed request
-    parsed_request.user_pwd = decrypt_password;
 
     parsed_request.sender = user_exist;
     return parsed_request;
