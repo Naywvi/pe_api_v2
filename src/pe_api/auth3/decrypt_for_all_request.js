@@ -29,8 +29,11 @@ module.exports = {
     //> Check if the user exist
     const { iat, ...new_payload } = decrypt_sender;
 
-    const user_exist = await check_auth.user(new_payload, jwt_token);
+    let user_exist = await check_auth.user(new_payload, jwt_token);
     if (!user_exist) throw error_message.unauthorized;
+
+    user_exist = JSON.stringify(user_exist);
+    user_exist = JSON.parse(user_exist);
 
     parsed_request.sender = user_exist;
     return parsed_request;

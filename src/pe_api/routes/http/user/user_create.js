@@ -22,10 +22,10 @@ module.exports = {
       ];
 
       let request_veracity = await request.verify_request(req, data);
-      console.log(request_veracity)
+
       //> Decrypt password
       const decrypt_password = await deCrypt.decrypt(request_veracity.user_pwd);
-      console.log(decrypt_password)
+
       //> attibute the decrypted password to the parsed request
       request_veracity.user_pwd = decrypt_password;
 
