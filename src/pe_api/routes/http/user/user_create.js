@@ -42,10 +42,8 @@ module.exports = {
       //<== create the user
       const result = await check_user_request.create(request_veracity);
 
-      res.status(200);
-      res.json(result);
+      res.status(200).json(result);
     } catch (error) {
-      console.log(error)
       res.status(400);
       res.json(error);
     } finally {

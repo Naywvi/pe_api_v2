@@ -28,8 +28,19 @@ module.exports = {
   read_society: async (user_request) => {
     try {
       let result = await UserModel.find({ user_soc_id: user_request.sender.user_soc_id });
-      //<== if query.visibility is defined, search for all users
       result = await utils.generate_result(`All users`, result, true);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  read_one: async (user_request) => {
+    try {
+      let result = await UserModel.findOne({ _id: user_request.user_id });
+      result = JSON.stringify(result);
+      result = JSON.parse(result);
+      if (result._id === user_request.sender._id) result = await utils.generate_result(`himself`, result);
+      else if (result._id !== user_request.sender._id) result = await utils.generate_result(`user`, result);
       return result;
     } catch (error) {
       throw error;

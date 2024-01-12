@@ -47,7 +47,14 @@ const permit_modifications = {
     "user_banned",
   ],
 };
-
+async function format_date(date) {
+  let a = new Date(date);
+  let jour = a.getUTCDate();
+  let mois = a.getUTCMonth() + 1;
+  let annee = a.getUTCFullYear();
+  date = `${jour}/${mois}/${annee}`;
+  return date;
+}
 module.exports = {
   //<== format the request by permit_modifications rank
   check_modifications: async (user_request, rank) => {
@@ -76,13 +83,14 @@ module.exports = {
     var result_clean;
     if (many) {
       result_clean = [];
-      object_result.forEach((user) => {
+      object_result.forEach(async (user) => {
+        let date = await format_date(user.user_inscription_date);
         result_clean.push({
           user_first_name: user.user_first_name,
           user_last_name: user.user_last_name,
           user_address: user.user_address,
           user_city: user.user_city,
-          user_inscription_date: user.user_inscription_date,
+          user_inscription_date: date,
           user_banned: user.user_banned,
           user_planning_id: user.user_planning_id,
           user_new: user.user_new,
@@ -92,9 +100,9 @@ module.exports = {
           user_birthday: user.user_birthday,
           user_soc_id: user.user_soc_id,
           user_id: user._id,
-
         });
       });
+
     } else if (rank) {
       result_clean = {
         rank_id: object_result.rank_id,
@@ -161,15 +169,26 @@ module.exports = {
         society_zip: object_result.society_zip,
       };
     } else {
+
+      let date = await format_date(object_result.user_inscription_date);
+      let birthday = await format_date(object_result.user_birthday);
       result_clean = {
         user_first_name: object_result.user_first_name,
         user_last_name: object_result.user_last_name,
+        user_address: object_result.user_address,
+        user_city: object_result.user_city,
+        user_inscription_date: date,
+        user_banned: object_result.user_banned,
+        user_planning_id: object_result.user_planning_id,
+        user_new: object_result.user_new,
         user_phone: object_result.user_phone,
-        user_email: object_result.user_email,
-        user_birthday: object_result.user_birthday,
+        user_mail: object_result.user_mail,
         user_zip: object_result.user_zip,
+        user_birthday: birthday,
         user_soc_id: object_result.user_soc_id,
+        user_id: object_result._id,
       };
+
     }
 
     const result = {

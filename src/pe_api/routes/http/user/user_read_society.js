@@ -22,8 +22,7 @@ module.exports = {
 
       //<== read the user(s)
       const result = await check_user_request.read_society(request_veracity);
-      await res.status(200);
-      await res.json(result);
+      await res.status(200).json(result);
     } catch (error) {
       res.status(400);
       res.json(error);

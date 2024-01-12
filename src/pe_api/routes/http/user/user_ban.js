@@ -27,7 +27,6 @@ module.exports = {
 
       res.status(200).json("User banned");
     } catch (error) {
-      console.log(error)
       res.status(400);
       res.json(error);
     } finally {
