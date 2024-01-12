@@ -102,7 +102,6 @@ module.exports = {
   },
   ban_one: async (user_request) => {
     try {
-      console.log(user_request)
       //check if user is not already banned
       let banned = await UserModel.updateOne({ _id: user_request.user_id }, { user_banned: true });
       if (!banned.modifiedCount) throw error_message.already_banned;
@@ -113,20 +112,14 @@ module.exports = {
       throw error;
     }
   },
-  unban: async (user_request) => {
+  unban_one: async (user_request) => {
     try {
-      //if user already exists
-      const user = await utils.user_exist(user_request);
-
-      //check if user is not already unbanned
-      const banned = await UserModel.updateOne(user, { user_banned: false });
-      if (!banned.modifiedCount) throw error_message.already_unbanned;
-
-      const result = await utils.generate_result(
-        `${user.user_first_name} was unbanned`,
-        user
-      );
-      return result;
+      //check if user is not already banned
+      let banned = await UserModel.updateOne({ _id: user_request.user_id }, { user_banned: false });
+      if (!banned.modifiedCount) throw error_message.already_banned;
+      banned = JSON.stringify(banned);
+      banned = JSON.parse(banned);
+      return true;
     } catch (error) {
       throw error;
     }
