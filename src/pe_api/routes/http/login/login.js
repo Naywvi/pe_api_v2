@@ -29,7 +29,7 @@ module.exports = {
       );
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw error_m.bad_request(res);
+        throw await error_m.bad_request();
       }
 
       //> Vérification de l'existence de l'utilisateur
@@ -43,7 +43,7 @@ module.exports = {
         postData.login,
         postData.password
       );
-      if (!user_exist) throw error_m.unauthorized(res);
+      if (!user_exist) throw await error_m.unauthorized();
 
       //> Si y a un soucis avec le token, on le gère ici !
       user_exist.user_token = await generate_temp_token();
@@ -52,10 +52,9 @@ module.exports = {
       user_exist = JSON.stringify(user_exist);
       user_exist = JSON.parse(user_exist);
 
-      await res.json(user_exist);
-      await res.status(200);
+      await res.json(user_exist).status(200);
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

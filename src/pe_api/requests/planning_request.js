@@ -2,13 +2,13 @@ const error_m = require("../../utils/error");
 const planningModel = require("../../database/models/planning");
 
 module.exports = {
-  create: async (user_request, res) => {
+  create: async (user_request) => {
     try {
       //> Check if user have a planning
       const find_planning = await planningModel.findOne({
         planning_user: user_request,
       });
-      if (find_planning !== null) throw error_m.already_exists(res);
+      if (find_planning !== null) throw await error_m.already_exists();
 
       //> Add start date
       const startDate = Date.now();
@@ -26,13 +26,13 @@ module.exports = {
       throw error;
     }
   },
-  read: async (user_request, res) => {
+  read: async (user_request) => {
     try {
       //> Check if user have a planning
       const find_planning = await planningModel.findOne({
         user: user_request.user,
       });
-      if (find_planning === null) throw error_m.not_found(res);
+      if (find_planning === null) throw await error_m.not_found();
 
       return find_planning;
     } catch (error) {

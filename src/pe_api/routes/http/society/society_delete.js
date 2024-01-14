@@ -17,7 +17,7 @@ module.exports = {
         request.sender.token,
         request.sender._id
       );
-      if (!is_valid_token) throw error_m.invalid_token(res);
+      if (!is_valid_token) throw await error_m.invalid_token();
 
       //<== check the rank of the user
       const rank = await check_auth.check_rank(
@@ -25,14 +25,14 @@ module.exports = {
         request.sender._id
       );
 
-      if (rank !== 99) throw error_m.unauthorized(res);
+      if (rank !== 99) throw await error_m.unauthorized();
 
       //<== delete the society
-      const result = await society_func.delete(update, res);
+      const result = await society_func.delete(update);
 
       await res.status(200).json(result);
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

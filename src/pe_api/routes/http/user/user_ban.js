@@ -12,23 +12,23 @@ module.exports = {
       let request_veracity = await request.verify_request(req);
 
       if (request_veracity.user_id === request_veracity.sender._id)
-        return res.status(400).json("You can't fire yourself");
+        throw await error_m.cant_fire_yourself();
       //  <== check if user_society_id is present
       if (request_veracity.sender.user_soc_id === undefined)
-        throw error_m.badly_formatted(res);
+        throw await error_m.badly_formatted();
 
       //<== check the rank of the user
       const rank = request_veracity.sender.user_rank_id;
       const rank_id = await utils.basic_rank_id();
-      if (!rank_id.includes(rank)) throw error_m.unauthorized(res);
+      if (!rank_id.includes(rank)) throw await error_m.unauthorized();
 
       //<== User application
-      const result = await user_func.ban_one(request_veracity, res);
-      if (result === undefined) throw error_m.not_found(res);
+      const result = await user_func.ban_one(request_veracity);
+      if (result === undefined) throw await error_m.not_found();
 
       await res.status(200).json("User banned");
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

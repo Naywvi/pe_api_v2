@@ -75,13 +75,13 @@ async function exist_transformed_client(req) {
 }
 
 module.exports = {
-  create: async (transformed_client_request, id, res) => {
+  create: async (transformed_client_request, id) => {
     try {
       // <== check if transformed_client already exists
       const exist = await exist_transformed_client(
         transformed_client_request.request
       );
-      if (exist) throw error_m.already_exists(res);
+      if (exist) throw await error_m.already_exists();
 
       // <== create the transformed_client
       const formatted_transformed_client = {
@@ -93,7 +93,7 @@ module.exports = {
         formatted_transformed_client
       );
       const save = await transformed_client.save();
-      if (!save) throw error_m.badly_formatted(res);
+      if (!save) throw await error_m.badly_formatted();
 
       // <== generate the result
       const result = await utils.generate_result(
@@ -109,13 +109,13 @@ module.exports = {
       throw error;
     }
   },
-  update: async (transformed_client_request, rank, res) => {
+  update: async (transformed_client_request, rank) => {
     try {
       // <== check if transformed_client already exists
       const exist = await exist_transformed_client(
         transformed_client_request.request
       );
-      if (!exist) throw error_m.not_found(res);
+      if (!exist) throw await error_m.not_found();
 
       // <== check if the user can update the transformed_client
       var permissions;
@@ -129,7 +129,7 @@ module.exports = {
           transformed_client_request,
           "society_and_confirmateur"
         );
-      } else throw error_m.unauthorized(res);
+      } else throw await error_m.unauthorized();
 
       //<== delete the update key
       delete transformed_client_request.request.update;
@@ -139,7 +139,8 @@ module.exports = {
         transformed_client_request.request,
         permissions
       );
-      if (!transformed_client.modifiedCount) throw error_m.already_updated(res);
+      if (!transformed_client.modifiedCount)
+        throw await error_m.already_updated();
 
       // <== generate the result
       const result = await utils.generate_result(
@@ -155,13 +156,13 @@ module.exports = {
       throw error;
     }
   },
-  delete: async (transformed_client_request, res) => {
+  delete: async (transformed_client_request) => {
     try {
       // <== check if transformed_client already exists
       const exist = await exist_transformed_client(
         transformed_client_request.request
       );
-      if (!exist) throw error_m.not_found(res);
+      if (!exist) throw await error_m.not_found();
 
       // <== delete the transformed_client
       const transformed_client = await transformed_client_Model.deleteOne({
@@ -178,7 +179,7 @@ module.exports = {
         transformedclient_zip:
           transformed_client_request.request.transformedclient_zip,
       });
-      if (!transformed_client) throw error_m.badly_formatted(res);
+      if (!transformed_client) throw await error_m.badly_formatted();
 
       // <== generate the result
       const result = await utils.generate_result(
@@ -194,13 +195,13 @@ module.exports = {
       throw error;
     }
   },
-  read: async (transformed_client_request, query = undefined, res) => {
+  read: async (transformed_client_request, query = undefined) => {
     try {
       // <== check if transformed_client already exists
       const exist = await exist_transformed_client(
         transformed_client_request.request
       );
-      if (!exist) throw error_m.not_found(res);
+      if (!exist) throw await error_m.not_found();
       var result;
       if (query.visibility === "all") {
         // <== read the transformed_client of all the society
@@ -208,7 +209,7 @@ module.exports = {
           transformedclient_society_id:
             transformed_client_request.request.transformedclient_society_id,
         });
-        if (!transformed_client) throw error_m.not_found(res);
+        if (!transformed_client) throw await error_m.not_found();
 
         // <== generate the result
         result = await utils.generate_result(
@@ -223,7 +224,7 @@ module.exports = {
         const transformed_client = await transformed_client_Model.findOne(
           transformed_client_request.request
         );
-        if (!transformed_client) throw error_m.not_found(res);
+        if (!transformed_client) throw await error_m.not_found();
 
         // <== generate the result
         result = await utils.generate_result(

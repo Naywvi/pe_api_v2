@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const error_message = require("../../utils/error");
+const error_m = require("../../utils/error");
 const deCrypt = require("./decryt");
 const bcrypt = require("bcrypt");
 const userModel = require("../../database/models/user");
@@ -10,7 +10,7 @@ module.exports = {
     const is_valid = await mongoose
       .model("User")
       .findOne({ _id: _id, user_token: token });
-    if (!is_valid) throw error_message.unauthorized;
+    if (!is_valid) throw await error_m.unauthorized();
     if (is_valid.user_admin) return 99;
     return is_valid.user_rank_id;
   },
@@ -18,7 +18,7 @@ module.exports = {
     const is_valid = await mongoose
       .model("User")
       .findOne({ _id: _id, user_token: token });
-    if (!is_valid) throw error_message.unauthorized;
+    if (!is_valid) throw await error_m.unauthorized();
     return is_valid.user_soc_id;
   },
   same_user: async (user1, user2) => {

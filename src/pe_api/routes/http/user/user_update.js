@@ -12,9 +12,10 @@ module.exports = {
     try {
       let request_veracity = await request.verify_request(req);
       console.log("request_veracity", request_veracity);
-      await res.status(200).json(result);
+
+      await res.status(200).json("result");
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

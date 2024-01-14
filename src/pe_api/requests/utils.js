@@ -219,9 +219,9 @@ module.exports = {
     }
 
     if (search) {
-      if (user_exist) throw error_m.already_exists(res);
+      if (user_exist) throw await error_m.already_exists();
     } else if (!search) {
-      if (!user_exist) throw error_m.not_found(res);
+      if (!user_exist) throw await error_m.not_found();
       else return user_exist;
     }
   },

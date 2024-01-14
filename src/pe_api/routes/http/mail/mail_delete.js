@@ -20,7 +20,7 @@ module.exports = {
 
       await res.status(200).json(mail);
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

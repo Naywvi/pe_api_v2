@@ -16,7 +16,7 @@ module.exports = {
 
       const user_id = request_veracity.sender.id;
 
-      if (!from || !to || !sentAt) throw error_m.badly_formatted(res);
+      if (!from || !to || !sentAt) throw await error_m.badly_formatted();
 
       const mail = new Mail({
         from,
@@ -34,7 +34,7 @@ module.exports = {
 
       await res.status(200).json(mail);
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

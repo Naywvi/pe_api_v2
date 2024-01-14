@@ -77,16 +77,16 @@ async function exist_society(user_request) {
 }
 
 module.exports = {
-  create: async (user_request, res) => {
+  create: async (user_request) => {
     try {
       //<== check if the society exist
       const exist_s = await exist_society(user_request);
-      if (exist_s) throw error_m.already_exists(res);
+      if (exist_s) throw await error_m.already_exists();
 
       //<== create the society
       const society = new SocietyModel(user_request.request);
       const save = await society.save();
-      if (!save) throw error_m.badly_formatted(res);
+      if (!save) throw await error_m.badly_formatted();
 
       //<== generate the result
       const result = utils.generate_result(
@@ -104,11 +104,11 @@ module.exports = {
       throw error;
     }
   },
-  update: async (user_request, rank, res) => {
+  update: async (user_request, rank) => {
     try {
       //<== check if the society exist
       const exist_s = await exist_society(user_request);
-      if (!exist_s) throw error_m.not_found(res);
+      if (!exist_s) throw await error_m.not_found();
       var modifications;
       //<== check if the rank is allowed to modify the society
       if (rank === 99) {
@@ -117,17 +117,17 @@ module.exports = {
         modifications = await society_permits(user_request, "moderator");
       } else if (rank === 1) {
         modifications = await society_permits(user_request, "society");
-      } else throw error_m.unauthorized(res);
+      } else throw await error_m.unauthorized();
 
       //<== update the society
       const society = await SocietyModel.findOne({
         society_sirene: user_request.request.society_sirene,
         society_siret: user_request.request.society_siret,
       });
-      if (!society) throw error_m.not_found(res);
+      if (!society) throw await error_m.not_found();
 
       const update = await SocietyModel.updateOne(society, modifications);
-      if (update.modifiedCount === 0) throw error_m.already_updated(res);
+      if (update.modifiedCount === 0) throw await error_m.already_updated();
       console.log(update);
       //<== generate the result
       const result = utils.generate_result(
@@ -145,21 +145,21 @@ module.exports = {
       throw error;
     }
   },
-  delete: async (user_request, res) => {
+  delete: async (user_request) => {
     try {
       //<== check if the society exist
       const exist_s = await exist_society(user_request);
-      if (!exist_s) throw error_m.not_found(res);
+      if (!exist_s) throw await error_m.not_found();
 
       if (!user_request.request.society_name)
-        throw error_m.badly_formatted(res);
+        throw await error_m.badly_formatted();
 
       //<== delete the society
       const society = await SocietyModel.findOneAndDelete({
         society_sirene: user_request.request.society_sirene,
         society_siret: user_request.request.society_siret,
       });
-      if (!society) throw error_m.not_found(res);
+      if (!society) throw await error_m.not_found();
 
       //<== generate the result
       const result = utils.generate_result(
@@ -177,18 +177,18 @@ module.exports = {
       throw error;
     }
   },
-  read: async (user_request, res) => {
+  read: async (user_request) => {
     try {
       //<== check if the society exist
       const exist_s = await exist_society(user_request);
-      if (!exist_s) throw error_m.not_found(res);
+      if (!exist_s) throw await error_m.not_found();
 
       //<== find the society
       const society = await SocietyModel.findOne({
         society_sirene: user_request.request.society_sirene,
         society_siret: user_request.request.society_siret,
       });
-      if (!society) throw error_m.not_found(res);
+      if (!society) throw await error_m.not_found();
 
       //<== generate the result
       const result = utils.generate_result(
@@ -206,11 +206,11 @@ module.exports = {
       throw error;
     }
   },
-  ban: async (user_request, res) => {
+  ban: async (user_request) => {
     try {
       //<== check if the society exist
       const exist_s = await exist_society(user_request);
-      if (!exist_s) throw error_m.not_found(res);
+      if (!exist_s) throw await error_m.not_found();
 
       //<== ban the society
       const society = await SocietyModel.findOneAndUpdate(
@@ -220,13 +220,15 @@ module.exports = {
         },
         { society_banned: true }
       );
-      if (!society) throw error_m.not_found(res);
+      if (!society) throw await error_m.not_found();
 
       //<== ban all users from the society
       const user = await UserModel.updateMany(
         { user_soc_id: society.society_id },
         { user_banned: true }
-      ).catch((error) => {});
+      ).catch(async () => {
+        throw await error_m.badly_formatted();
+      });
 
       //<== generate the result
       const result = utils.generate_result(
@@ -244,11 +246,11 @@ module.exports = {
       throw error;
     }
   },
-  unban: async (user_request, res) => {
+  unban: async (user_request) => {
     try {
       //<== check if the society exist
       const exist_s = await exist_society(user_request);
-      if (!exist_s) throw error_m.not_found(res);
+      if (!exist_s) throw await error_m.not_found();
 
       //<== ban the society
       const society = await SocietyModel.findOneAndUpdate(
@@ -258,14 +260,14 @@ module.exports = {
         },
         { society_banned: false }
       );
-      if (!society) throw error_m.not_found(res);
+      if (!society) throw await error_m.not_found();
 
       //<== ban all users from the society
       const user = await UserModel.updateMany(
         { user_soc_id: society.society_id },
         { user_banned: false }
-      ).catch((error) => {
-        throw error_m.badly_formatted(res);
+      ).catch(async () => {
+        throw await error_m.badly_formatted();
       });
 
       //<== generate the result

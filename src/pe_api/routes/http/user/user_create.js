@@ -34,7 +34,7 @@ module.exports = {
       const rank = request_veracity.sender.user_rank_id;
 
       const rank_id = await utils.basic_rank_id();
-      if (!rank_id.includes(rank)) throw error_m.unauthorized(res);
+      if (!rank_id.includes(rank)) throw await error_m.unauthorized();
 
       //> Attribute society ID & delete the sender
       request_veracity.user_soc_id = request_veracity.sender.user_soc_id;
@@ -42,14 +42,14 @@ module.exports = {
       delete request_veracity.sender;
 
       //<== create the user
-      let result = await user_func.create(request_veracity, res);
+      let result = await user_func.create(request_veracity);
 
       //> Create planning
       await planning.create(result._id);
 
       await res.status(200).json(result.response);
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

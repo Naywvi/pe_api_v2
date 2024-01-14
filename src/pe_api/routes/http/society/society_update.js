@@ -18,7 +18,7 @@ module.exports = {
         request.sender.token,
         request.sender._id
       );
-      if (!is_valid_token) throw error_m.invalid_token(res);
+      if (!is_valid_token) throw await error_m.invalid_token();
 
       //<== check the rank of the user
       const rank = await check_auth.check_rank(
@@ -29,26 +29,26 @@ module.exports = {
       //<== check rank if != moderator
       if (rank !== 98) {
         const rank_id = await utils.basic_rank_id();
-        if (!rank_id.includes(rank)) throw error_m.unauthorized;
+        if (!rank_id.includes(rank)) throw await error_m.unauthorized();
         else {
           if (rank !== 99) {
-            if (rank !== 1) throw error_m.unauthorized(res);
+            if (rank !== 1) throw await error_m.unauthorized();
             const user_society_id = await check_auth.check_society_id(
               request.sender.token,
               request.sender._id
             );
             if (user_society_id !== request.request.society_id)
-              throw error_m.unauthorized(res);
+              throw await error_m.unauthorized();
           }
         }
       }
 
       //<== update the society
-      const result = await society_func.update(request, rank, res);
+      const result = await society_func.update(request, rank);
 
       await res.status(200).json(result);
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

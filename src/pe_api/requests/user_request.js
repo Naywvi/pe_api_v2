@@ -3,15 +3,15 @@ const UserModel = require("../../database/models/user");
 const utils = require("./utils");
 
 module.exports = {
-  create: async (user_request, res) => {
+  create: async (user_request) => {
     try {
       //if create user request is valid, check if user already exists
-
-      const user_exist = UserModel.findOne({
+      const user_exist = await UserModel.findOne({
         user_mail: user_request.user_mail,
       });
-      const error = await error_m.already_exists(res);
-      if (user_exist) throw error;
+      if (user_exist) {
+        throw await error_m.already_exists();
+      }
 
       //check the syntax of the user request
       const user = {
@@ -73,11 +73,11 @@ module.exports = {
       throw error;
     }
   },
-  update: async (user_request, rank = false, res) => {
+  update: async (user_request, rank = false) => {
     try {
       //<== if user already exists
       const user = await utils.user_exist(user_request);
-      if (!user) throw error_m.not_found(res);
+      if (!user) throw await error_m.not_found();
 
       var result;
       var user_updated;
@@ -90,21 +90,24 @@ module.exports = {
             "society"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_m.already_updated(res);
+          if (!user_updated.modifiedCount)
+            throw await error_m.already_updated();
         } else if (rank === 2) {
           const permissions = await utils.check_modifications(
             user_request,
             "confirmateur"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_m.already_updated(res);
+          if (!user_updated.modifiedCount)
+            throw await error_m.already_updated();
         } else if (rank === 99) {
           const permissions = await utils.check_modifications(
             user_request,
             "super_admin"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_m.already_updated(res);
+          if (!user_updated.modifiedCount)
+            throw await error_m.already_updated();
         }
       } else {
         //<== simple users modifications
@@ -113,7 +116,7 @@ module.exports = {
           "user"
         );
         user_updated = await UserModel.updateOne(user, permissions);
-        if (!user_updated.modifiedCount) throw error_m.update_failed(res);
+        if (!user_updated.modifiedCount) throw await error_m.update_failed();
       }
 
       //<== format the result
@@ -126,14 +129,14 @@ module.exports = {
       throw error;
     }
   },
-  ban_one: async (user_request, res) => {
+  ban_one: async (user_request) => {
     try {
       //check if user is not already banned
       let banned = await UserModel.updateOne(
         { _id: user_request.user_id },
         { user_banned: true }
       );
-      if (!banned.modifiedCount) throw error_m.already_banned(res);
+      if (!banned.modifiedCount) throw await error_m.already_banned();
       banned = JSON.stringify(banned);
       banned = JSON.parse(banned);
       return true;
@@ -141,14 +144,14 @@ module.exports = {
       throw error;
     }
   },
-  unban_one: async (user_request, res) => {
+  unban_one: async (user_request) => {
     try {
       //check if user is not already banned
       let banned = await UserModel.updateOne(
         { _id: user_request.user_id },
         { user_banned: false }
       );
-      if (!banned.modifiedCount) throw error_m.already_banned(res);
+      if (!banned.modifiedCount) throw await error_m.already_banned();
       banned = JSON.stringify(banned);
       banned = JSON.parse(banned);
       return true;
@@ -156,13 +159,13 @@ module.exports = {
       throw error;
     }
   },
-  add_token: async (user_id, token, res) => {
+  add_token: async (user_id, token) => {
     try {
       const user = await UserModel.updateOne(
         { _id: user_id },
         { user_token: token }
       );
-      if (!user.modifiedCount) throw error_m.bad_request(res);
+      if (!user.modifiedCount) throw await error_m.bad_request();
       return true;
     } catch (error) {
       throw error;

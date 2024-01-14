@@ -12,11 +12,11 @@ module.exports = {
       // let request_veracity = await request.verify_request(req);
 
       // const result = await planning.create(req.body);
-      // if (result === undefined) throw error_m.not_found(res);
+      // if (result === undefined) throw  await error_m.not_found();
 
       await res.status(200).json("config planning created");
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

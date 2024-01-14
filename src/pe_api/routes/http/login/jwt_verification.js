@@ -20,28 +20,28 @@ module.exports = {
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw error_m.bad_request(res);
+        throw await error_m.bad_request();
       }
 
       //> Vérification du token jwt
       const token =
         req.headers.authorization && req.headers.authorization.split(" ")[1];
-      if (!token) throw error_m.unauthorized(res);
+      if (!token) throw await error_m.unauthorized();
 
       //> Décodage du token jwt
       const decoded = await check_auth_token.verify_jwt(token);
-      if (!decoded) throw error_m.unauthorized(res);
+      if (!decoded) throw await error_m.unauthorized();
 
       //> Ajout du token à l'utilisateur
-      const add_to = await user_func.add_token(decoded._id, token, res);
-      if (!add_to) throw error_m.bad_request(res);
+      const add_to = await user_func.add_token(decoded._id, token);
+      if (!add_to) throw await error_m.bad_request();
 
       //> Envoie du cookie pour l'api
       await res.cookie("authentified", token);
 
       await res.status(200);
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }

@@ -51,16 +51,16 @@ async function check_modifications(user_request) {
 }
 
 module.exports = {
-  create: async (user_request, res) => {
+  create: async (user_request) => {
     try {
       //<== check if the society already exist
       const society_exist = await tmp_society_exist(user_request);
-      if (society_exist) throw error_m.already_exists(res);
+      if (society_exist) throw await error_m.already_exists();
 
       //<== create the society
       const tmp_society = new TempSocietyModel(user_request.request);
       const save = await tmp_society.save();
-      if (!save) throw error_m.society_not_saved(res);
+      if (!save) throw await error_m.society_not_saved();
 
       //<== return the result
       const result = await utils.generate_result(
@@ -77,11 +77,11 @@ module.exports = {
       throw error;
     }
   },
-  read: async (user_request, res) => {
+  read: async (user_request) => {
     try {
       //<== check if the society already exist
       const society_exist = await tmp_society_exist(user_request);
-      if (!society_exist) throw error_m.not_found(res);
+      if (!society_exist) throw await error_m.not_found();
 
       //<== read the society
       const tmp_society = await TempSocietyModel.findOne({
@@ -89,7 +89,7 @@ module.exports = {
         temp_society_siret: user_request.request.temp_society_siret,
         temp_society_sirene: user_request.request.temp_society_sirene,
       });
-      if (!tmp_society) throw error_m.not_found(res);
+      if (!tmp_society) throw await error_m.not_found();
 
       //<== return the result
       const result = await utils.generate_result(
@@ -106,15 +106,15 @@ module.exports = {
       throw error;
     }
   },
-  update: async (user_request, res) => {
+  update: async (user_request) => {
     try {
       //<== check if the society already exist
       const society_exist = await tmp_society_exist(user_request);
-      if (!society_exist) throw error_m.not_found(res);
+      if (!society_exist) throw await error_m.not_found();
 
       //<== check the modifications
       const modifications = await check_modifications(user_request);
-      if (modifications.length === 0) throw error_m.no_modifications(res);
+      if (modifications.length === 0) throw await error_m.no_modifications();
 
       //<== delete the update request
       delete user_request.request.update;
@@ -131,7 +131,7 @@ module.exports = {
         result_tmp_society,
         modifications
       );
-      if (tmp_society.modifiedCount === 0) throw error_m.update_failed(res);
+      if (tmp_society.modifiedCount === 0) throw await error_m.update_failed();
 
       //<== return the result
       const result = await utils.generate_result(
@@ -149,11 +149,11 @@ module.exports = {
       throw error;
     }
   },
-  delete: async (user_request, res) => {
+  delete: async (user_request) => {
     try {
       //<== check if the society already exist
       const society_exist = await tmp_society_exist(user_request);
-      if (!society_exist) throw error_m.not_found;
+      if (!society_exist) throw await error_m.not_found;
 
       //<== read the society
       const tmp_society = await TempSocietyModel.findOneAndDelete({
@@ -161,8 +161,8 @@ module.exports = {
         temp_society_siret: user_request.request.temp_society_siret,
         temp_society_sirene: user_request.request.temp_society_sirene,
       });
-      if (!tmp_society) throw error_m.not_found(res);
-      if (tmp_society.modifiedCount === 0) throw error_m.not_found(res);
+      if (!tmp_society) throw await error_m.not_found();
+      if (tmp_society.modifiedCount === 0) throw await error_m.not_found();
 
       //<== return the result
       const result = await utils.generate_result(
@@ -179,13 +179,13 @@ module.exports = {
       throw error;
     }
   },
-  audit_validation: async (user_request, res) => {
+  audit_validation: async (user_request) => {
     try {
     } catch (error) {
       throw error;
     }
   },
-  audit_refused: async (user_request, res) => {
+  audit_refused: async (user_request) => {
     try {
     } catch (error) {
       throw error;

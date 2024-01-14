@@ -14,14 +14,14 @@ module.exports = {
       //<== check the rank of the user
       const rank = request_veracity.sender.user_rank_id;
       const rank_id = await utils.basic_rank_id();
-      if (!rank_id.includes(rank)) throw error_m.unauthorized(res);
+      if (!rank_id.includes(rank)) throw await error_m.unauthorized();
 
-      const result = await cplanning_func.create(req.body, res);
-      if (result === undefined) throw error_m.not_found(res);
+      const result = await cplanning_func.create(req.body);
+      if (result === undefined) throw await error_m.not_found();
 
       await res.status(200).json("Config planning created");
     } catch (error) {
-      await res.status(400).json(error);
+      await res.status(error.code).json(error);
     } finally {
       await res.end();
     }
