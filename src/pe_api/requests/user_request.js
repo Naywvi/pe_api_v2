@@ -77,7 +77,7 @@ module.exports = {
     try {
       //<== if user already exists
       const user = await utils.user_exist(user_request);
-      if (!user) throw error_m.not_found;
+      if (!user) throw error_m.not_found(res);
 
       var result;
       var user_updated;

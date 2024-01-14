@@ -63,4 +63,7 @@ module.exports = {
   missing_information: async (res) => {
     return res.status(400).json("Missing information - Contact an admin");
   },
+  society_not_saved: async (res) => {
+    return res.status(400).json("Society not saved - Contact an admin");
+  },
 };

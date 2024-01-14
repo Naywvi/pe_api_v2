@@ -1,4 +1,4 @@
-const error_message = require("../../utils/error");
+const error_m = require("../../utils/error");
 const UserModel = require("../../database/models/user");
 const RankModel = require("../../database/models/rank");
 
@@ -219,9 +219,9 @@ module.exports = {
     }
 
     if (search) {
-      if (user_exist) throw error_message.already_exists;
+      if (user_exist) throw error_m.already_exists(res);
     } else if (!search) {
-      if (!user_exist) throw error_message.not_found;
+      if (!user_exist) throw error_m.not_found(res);
       else return user_exist;
     }
   },
