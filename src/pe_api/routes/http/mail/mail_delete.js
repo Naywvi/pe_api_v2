@@ -18,13 +18,11 @@ module.exports = {
         user_id: user_id,
       });
 
-      res.status(200);
-      res.json(mail);
+      await res.status(200).json(mail);
     } catch (error) {
-      res.status(400);
-      res.json(error);
+      await res.status(400).json(error);
     } finally {
-      res.end();
+      await res.end();
     }
   },
 };

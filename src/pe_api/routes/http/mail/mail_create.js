@@ -1,7 +1,7 @@
 const Mail = require("../../../../database/models/mail");
 const User = require("../../../../database/models/user");
 const request = require("../../../auth3/decrypt_for_all_request");
-const error_message = require("../../../../utils/error");
+const error_m = require("../../../../utils/error");
 
 module.exports = {
   name: "/manage/mail/create",
@@ -16,7 +16,7 @@ module.exports = {
 
       const user_id = request_veracity.sender.id;
 
-      if (!from || !to || !sentAt) throw error_message.badly_formated;
+      if (!from || !to || !sentAt) throw error_m.badly_formatted(res);
 
       const mail = new Mail({
         from,
@@ -32,13 +32,11 @@ module.exports = {
       console.log("Mail created");
       await mail.save();
 
-      res.status(200);
-      res.json(mail);
+      await res.status(200).json(mail);
     } catch (error) {
-      res.status(400);
-      res.json(error);
+      await res.status(400).json(error);
     } finally {
-      res.end();
+      await res.end();
     }
   },
 };

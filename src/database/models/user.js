@@ -3,12 +3,10 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   //<== main informations
   user_inscription_date: { type: Date },
-  user_id: { type: Number, index: true, unique: true },
   user_token: { type: String, default: "", unique: true },
 
   //<== references informations
   user_soc_id: { type: Number, required: true, default: -1 },
-  user_planning_id: { type: Number, default: -1 },
   user_rank_id: { type: Number, default: -1 },
 
   //<== contact informations
@@ -47,10 +45,6 @@ userSchema.pre("save", async function (next) {
   doc.user_token =
     Math.random().toString(36).substring(2, 15) +
     Math.random().toString(36).substring(2, 15);
-  const totalCount = await mongoose
-    .model("User", userSchema, "user")
-    .countDocuments();
-  doc.user_id = totalCount + 1;
   next();
 });
 

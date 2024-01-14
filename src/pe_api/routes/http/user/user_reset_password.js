@@ -1,18 +1,16 @@
-const message_error = require("../../../../utils/error");
+const error_m = require("../../../../utils/error");
 module.exports = {
   name: "/manage/user/reset_password",
   description: "Reset a user password",
   method: "POST",
   run: async (req, res) => {
     try {
-      throw message_error.not_implemented;
-      res.status(200);
-      res.json("result");
+      throw error_m.not_implemented(res);
+      await res.status(200).json("result");
     } catch (error) {
-      res.status(400);
-      res.json(error);
+      await res.status(400).json(error);
     } finally {
-      res.end();
+      await res.end();
     }
   },
 };

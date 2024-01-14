@@ -1,13 +1,17 @@
-const error_message = require("../../utils/error");
+const error_m = require("../../utils/error");
 const UserModel = require("../../database/models/user");
 const utils = require("./utils");
-const { user } = require("../auth3/auth");
 
 module.exports = {
-  create: async (user_request) => {
+  create: async (user_request, res) => {
     try {
       //if create user request is valid, check if user already exists
-      await utils.user_exist(user_request, true);
+
+      const user_exist = UserModel.findOne({
+        user_mail: user_request.user_mail,
+      });
+      const error = await error_m.already_exists(res);
+      if (user_exist) throw error;
 
       //check the syntax of the user request
       const user = {
@@ -16,18 +20,27 @@ module.exports = {
         user_inscription_date: Date.now(),
       };
       const new_user = new UserModel(user);
+      const id = new_user._id.toString();
+
       await new_user.save().catch((err) => {
         throw err;
       });
 
-      return `${user_request.user_first_name} was created`;
+      const response = {
+        response: `${user_request.user_first_name} was created`,
+        _id: id,
+      };
+
+      return response;
     } catch (error) {
       throw error;
     }
   },
   read_society: async (user_request) => {
     try {
-      let result = await UserModel.find({ user_soc_id: user_request.sender.user_soc_id });
+      let result = await UserModel.find({
+        user_soc_id: user_request.sender.user_soc_id,
+      });
       result = await utils.generate_result(`All users`, result, true);
       return result;
     } catch (error) {
@@ -39,8 +52,10 @@ module.exports = {
       let result = await UserModel.findOne({ _id: user_request.user_id });
       result = JSON.stringify(result);
       result = JSON.parse(result);
-      if (result._id === user_request.sender._id) result = await utils.generate_result(`himself`, result);
-      else if (result._id !== user_request.sender._id) result = await utils.generate_result(`user`, result);
+      if (result._id === user_request.sender._id)
+        result = await utils.generate_result(`himself`, result);
+      else if (result._id !== user_request.sender._id)
+        result = await utils.generate_result(`user`, result);
       return result;
     } catch (error) {
       throw error;
@@ -62,7 +77,7 @@ module.exports = {
     try {
       //<== if user already exists
       const user = await utils.user_exist(user_request);
-      if (!user) throw error_message.not_found;
+      if (!user) throw error_m.not_found;
 
       var result;
       var user_updated;
@@ -75,21 +90,21 @@ module.exports = {
             "society"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_message.already_updated;
+          if (!user_updated.modifiedCount) throw error_m.already_updated;
         } else if (rank === 2) {
           const permissions = await utils.check_modifications(
             user_request,
             "confirmateur"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_message.already_updated;
+          if (!user_updated.modifiedCount) throw error_m.already_updated;
         } else if (rank === 99) {
           const permissions = await utils.check_modifications(
             user_request,
             "super_admin"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_message.already_updated;
+          if (!user_updated.modifiedCount) throw error_m.already_updated;
         }
       } else {
         //<== simple users modifications
@@ -98,7 +113,7 @@ module.exports = {
           "user"
         );
         user_updated = await UserModel.updateOne(user, permissions);
-        if (!user_updated.modifiedCount) throw error_message.update_failed;
+        if (!user_updated.modifiedCount) throw error_m.update_failed;
       }
 
       //<== format the result
@@ -114,8 +129,11 @@ module.exports = {
   ban_one: async (user_request) => {
     try {
       //check if user is not already banned
-      let banned = await UserModel.updateOne({ _id: user_request.user_id }, { user_banned: true });
-      if (!banned.modifiedCount) throw error_message.already_banned;
+      let banned = await UserModel.updateOne(
+        { _id: user_request.user_id },
+        { user_banned: true }
+      );
+      if (!banned.modifiedCount) throw error_m.already_banned;
       banned = JSON.stringify(banned);
       banned = JSON.parse(banned);
       return true;
@@ -126,8 +144,11 @@ module.exports = {
   unban_one: async (user_request) => {
     try {
       //check if user is not already banned
-      let banned = await UserModel.updateOne({ _id: user_request.user_id }, { user_banned: false });
-      if (!banned.modifiedCount) throw error_message.already_banned;
+      let banned = await UserModel.updateOne(
+        { _id: user_request.user_id },
+        { user_banned: false }
+      );
+      if (!banned.modifiedCount) throw error_m.already_banned;
       banned = JSON.stringify(banned);
       banned = JSON.parse(banned);
       return true;
@@ -141,7 +162,7 @@ module.exports = {
         { _id: user_id },
         { user_token: token }
       );
-      if (!user.modifiedCount) throw error_message.bad_request;
+      if (!user.modifiedCount) throw error_m.bad_request;
       return true;
     } catch (error) {
       throw error;

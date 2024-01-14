@@ -16,13 +16,11 @@ module.exports = {
       const mail = await Mail.findOne({ user_id: user_id, mail_id: mail_id });
       if (!mail) throw new Error("mail not found");
 
-      res.status(200);
-      res.json(mail);
+      await res.status(200).json(mail);
     } catch (error) {
-      res.status(400);
-      res.json(error);
+      await res.status(400).json(error);
     } finally {
-      res.end();
+      await res.end();
     }
   },
 };

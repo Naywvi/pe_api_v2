@@ -1,8 +1,9 @@
 const request = require("../../../auth3/decrypt_for_all_request");
-const error_message = require("../../../../utils/error");
+const error_m = require("../../../../utils/error");
 const check_user_request = require("../../../requests/user_request");
 const utils = require("../../../requests/utils");
 const deCrypt = require("../../../auth3/decryt");
+const planning = require("../../../requests/planning_request");
 
 module.exports = {
   name: "/manage/user/create",
@@ -33,21 +34,24 @@ module.exports = {
       const rank = request_veracity.sender.user_rank_id;
 
       const rank_id = await utils.basic_rank_id();
-      if (!rank_id.includes(rank)) throw error_message.unauthorized;
+      if (!rank_id.includes(rank)) throw error_m.unauthorized(res);
 
       //> Attribute society ID & delete the sender
       request_veracity.user_soc_id = request_veracity.sender.user_soc_id;
+
       delete request_veracity.sender;
 
       //<== create the user
-      const result = await check_user_request.create(request_veracity);
+      let result = await check_user_request.create(request_veracity, res);
 
-      res.status(200).json(result);
+      //> Create planning
+      await planning.create(result._id);
+
+      await res.status(200).json(result.response);
     } catch (error) {
-      res.status(400);
-      res.json(error);
+      await res.status(400).json(error);
     } finally {
-      res.end();
+      await res.end();
     }
   },
 };

@@ -1,7 +1,7 @@
 const { body, validationResult } = require("express-validator");
-const error_message = require("../../../../utils/error");
+const error_m = require("../../../../utils/error");
 const check_auth_token = require("../../../auth3/auth_token");
-const user = require("../../../requests/user_request")
+const user = require("../../../requests/user_request");
 
 module.exports = {
   name: "/auth/login/jwt_verification",
@@ -15,36 +15,35 @@ module.exports = {
       ];
       //> Vérification des données
       validationRules.forEach((validationRule) =>
-        validationRule(req, res, () => { })
+        validationRule(req, res, () => {})
       );
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw error_message.bad_request;
+        throw error_m.bad_request(res);
       }
 
       //> Vérification du token jwt
       const token =
         req.headers.authorization && req.headers.authorization.split(" ")[1];
-      if (!token) throw error_message.unauthorized;
+      if (!token) throw error_m.unauthorized(res);
 
       //> Décodage du token jwt
       const decoded = await check_auth_token.verify_jwt(token);
-      if (!decoded) throw error_message.unauthorized;
+      if (!decoded) throw error_m.unauthorized(res);
 
       //> Ajout du token à l'utilisateur
       const add_to = await user.add_token(decoded._id, token);
-      if (!add_to) throw error_message.bad_request;
+      if (!add_to) throw error_m.bad_request(res);
 
       //> Envoie du cookie pour l'api
       await res.cookie("authentified", token);
 
-      res.status(200);
+      await res.status(200);
     } catch (error) {
-      res.status(400);
-      res.json(error);
+      await res.status(400).json(error);
     } finally {
-      res.end();
+      await res.end();
     }
   },
 };

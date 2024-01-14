@@ -5,14 +5,12 @@ module.exports = {
   method: "POST",
   run: async (req, res) => {
     try {
-      throw message_error.not_implemented;
-      res.status(200);
-      res.json("result");
+      throw message_error.not_implemented(res);
+      await res.status(200).json("result");
     } catch (error) {
-      res.status(400);
-      res.json(error);
+      await res.status(400).json(error);
     } finally {
-      res.end();
+      await res.end();
     }
   },
 };

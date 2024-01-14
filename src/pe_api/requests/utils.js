@@ -92,7 +92,6 @@ module.exports = {
           user_city: user.user_city,
           user_inscription_date: date,
           user_banned: user.user_banned,
-          user_planning_id: user.user_planning_id,
           user_new: user.user_new,
           user_phone: user.user_phone,
           user_mail: user.user_mail,
@@ -102,7 +101,6 @@ module.exports = {
           user_id: user._id,
         });
       });
-
     } else if (rank) {
       result_clean = {
         rank_id: object_result.rank_id,
@@ -169,7 +167,6 @@ module.exports = {
         society_zip: object_result.society_zip,
       };
     } else {
-
       let date = await format_date(object_result.user_inscription_date);
       let birthday = await format_date(object_result.user_birthday);
       result_clean = {
@@ -179,7 +176,6 @@ module.exports = {
         user_city: object_result.user_city,
         user_inscription_date: date,
         user_banned: object_result.user_banned,
-        user_planning_id: object_result.user_planning_id,
         user_new: object_result.user_new,
         user_phone: object_result.user_phone,
         user_mail: object_result.user_mail,
@@ -188,7 +184,6 @@ module.exports = {
         user_soc_id: object_result.user_soc_id,
         user_id: object_result._id,
       };
-
     }
 
     const result = {
