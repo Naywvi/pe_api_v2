@@ -73,7 +73,7 @@ module.exports = {
       throw error;
     }
   },
-  update: async (user_request, rank = false) => {
+  update: async (user_request, rank = false, res) => {
     try {
       //<== if user already exists
       const user = await utils.user_exist(user_request);
@@ -90,21 +90,21 @@ module.exports = {
             "society"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_m.already_updated;
+          if (!user_updated.modifiedCount) throw error_m.already_updated(res);
         } else if (rank === 2) {
           const permissions = await utils.check_modifications(
             user_request,
             "confirmateur"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_m.already_updated;
+          if (!user_updated.modifiedCount) throw error_m.already_updated(res);
         } else if (rank === 99) {
           const permissions = await utils.check_modifications(
             user_request,
             "super_admin"
           );
           user_updated = await UserModel.updateOne(user, permissions);
-          if (!user_updated.modifiedCount) throw error_m.already_updated;
+          if (!user_updated.modifiedCount) throw error_m.already_updated(res);
         }
       } else {
         //<== simple users modifications
@@ -113,7 +113,7 @@ module.exports = {
           "user"
         );
         user_updated = await UserModel.updateOne(user, permissions);
-        if (!user_updated.modifiedCount) throw error_m.update_failed;
+        if (!user_updated.modifiedCount) throw error_m.update_failed(res);
       }
 
       //<== format the result
@@ -126,14 +126,14 @@ module.exports = {
       throw error;
     }
   },
-  ban_one: async (user_request) => {
+  ban_one: async (user_request, res) => {
     try {
       //check if user is not already banned
       let banned = await UserModel.updateOne(
         { _id: user_request.user_id },
         { user_banned: true }
       );
-      if (!banned.modifiedCount) throw error_m.already_banned;
+      if (!banned.modifiedCount) throw error_m.already_banned(res);
       banned = JSON.stringify(banned);
       banned = JSON.parse(banned);
       return true;
@@ -141,14 +141,14 @@ module.exports = {
       throw error;
     }
   },
-  unban_one: async (user_request) => {
+  unban_one: async (user_request, res) => {
     try {
       //check if user is not already banned
       let banned = await UserModel.updateOne(
         { _id: user_request.user_id },
         { user_banned: false }
       );
-      if (!banned.modifiedCount) throw error_m.already_banned;
+      if (!banned.modifiedCount) throw error_m.already_banned(res);
       banned = JSON.stringify(banned);
       banned = JSON.parse(banned);
       return true;
@@ -156,13 +156,13 @@ module.exports = {
       throw error;
     }
   },
-  add_token: async (user_id, token) => {
+  add_token: async (user_id, token, res) => {
     try {
       const user = await UserModel.updateOne(
         { _id: user_id },
         { user_token: token }
       );
-      if (!user.modifiedCount) throw error_m.bad_request;
+      if (!user.modifiedCount) throw error_m.bad_request(res);
       return true;
     } catch (error) {
       throw error;

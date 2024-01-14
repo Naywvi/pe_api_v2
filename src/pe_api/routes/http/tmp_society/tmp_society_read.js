@@ -1,7 +1,7 @@
 const format_query = require("../../../../utils/format_query");
 const error_m = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
-const tmp_society_request = require("../../../requests/tmp_society_request");
+const tmp_society_funct = require("../../../requests/tmp_society_request");
 const check_auth = require("../../../auth3/auth");
 const utils = require("../../../requests/utils");
 
@@ -30,7 +30,7 @@ module.exports = {
       if (!rank_id.includes(rank)) throw error_m.unauthorized(res);
 
       //<== read the tmp society
-      const result = await tmp_society_request.read(request);
+      const result = await tmp_society_funct.read(request, res);
 
       await res.status(200).json(result);
     } catch (error) {

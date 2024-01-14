@@ -1,6 +1,6 @@
 const request = require("../../../auth3/decrypt_for_all_request");
 const error_m = require("../../../../utils/error");
-const planning = require("../../../requests/planning_request");
+const planning_func = require("../../../requests/planning_request");
 const utils = require("../../../requests/utils");
 
 module.exports = {
@@ -16,7 +16,6 @@ module.exports = {
 
       await res.status(200).json("config planning created");
     } catch (error) {
-      console.log(error);
       await res.status(400).json(error);
     } finally {
       await res.end();

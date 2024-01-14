@@ -1,7 +1,7 @@
 const format_query = require("../../../../utils/format_query");
 const error_m = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
-const transformed_client_request = require("../../../requests/transformed_client_request");
+const transformed_client_func = require("../../../requests/transformed_client_request");
 const check_auth = require("../../../auth3/auth");
 const utils = require("../../../requests/utils");
 
@@ -41,7 +41,7 @@ module.exports = {
           throw error_m.unauthorized(res);
 
       //<== update the transformed_client
-      const result = await transformed_client_request.update(request, rank);
+      const result = await transformed_client_func.update(request, rank, res);
 
       await res.status(200).json(result);
     } catch (error) {

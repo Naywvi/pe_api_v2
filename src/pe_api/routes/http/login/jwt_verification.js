@@ -1,7 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const error_m = require("../../../../utils/error");
 const check_auth_token = require("../../../auth3/auth_token");
-const user = require("../../../requests/user_request");
+const user_func = require("../../../requests/user_request");
 
 module.exports = {
   name: "/auth/login/jwt_verification",
@@ -33,7 +33,7 @@ module.exports = {
       if (!decoded) throw error_m.unauthorized(res);
 
       //> Ajout du token à l'utilisateur
-      const add_to = await user.add_token(decoded._id, token);
+      const add_to = await user_func.add_token(decoded._id, token, res);
       if (!add_to) throw error_m.bad_request(res);
 
       //> Envoie du cookie pour l'api

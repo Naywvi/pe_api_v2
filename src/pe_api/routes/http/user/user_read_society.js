@@ -1,6 +1,6 @@
 const request = require("../../../auth3/decrypt_for_all_request");
 const error_m = require("../../../../utils/error");
-const check_user_request = require("../../../requests/user_request");
+const user_func = require("../../../requests/user_request");
 const utils = require("../../../requests/utils");
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
       if (!rank_id.includes(rank)) throw error_m.unauthorized(res);
 
       //<== read the user(s)
-      const result = await check_user_request.read_society(request_veracity);
+      const result = await user_func.read_society(request_veracity, res);
       await res.status(200).json(result);
     } catch (error) {
       await res.status(400).json(error);

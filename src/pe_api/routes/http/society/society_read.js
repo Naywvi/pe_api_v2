@@ -1,7 +1,7 @@
 const format_query = require("../../../../utils/format_query");
 const error_m = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
-const society_request = require("../../../requests/society_request");
+const society_func = require("../../../requests/society_request");
 const check_auth = require("../../../auth3/auth");
 const utils = require("../../../requests/utils");
 
@@ -46,7 +46,7 @@ module.exports = {
       }
 
       //<== read the society
-      const result = await society_request.read(request);
+      const result = await society_func.read(request, res);
 
       await res.status(200).json(result);
     } catch (error) {

@@ -1,7 +1,7 @@
 const format_query = require("../../../../utils/format_query");
 const error_m = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
-const transformed_client_request = require("../../../requests/transformed_client_request");
+const transformed_client_func = require("../../../requests/transformed_client_request");
 const check_auth = require("../../../auth3/auth");
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
       if (rank !== 99) throw error_m.unauthorized(res);
 
       //<== delete the transformed_client
-      const result = await transformed_client_request.delete(request);
+      const result = await transformed_client_func.delete(request, res);
 
       await res.status(200).json(result);
     } catch (error) {

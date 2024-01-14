@@ -1,7 +1,7 @@
 const format_query = require("../../../../utils/format_query");
 const error_m = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
-const transformed_client_request = require("../../../requests/transformed_client_request");
+const transformed_client_func = require("../../../requests/transformed_client_request");
 const check_auth = require("../../../auth3/auth");
 const utils = require("../../../requests/utils");
 
@@ -36,9 +36,10 @@ module.exports = {
       );
 
       //<== create the transformed client
-      const result = await transformed_client_request.create(
+      const result = await transformed_client_func.create(
         request,
-        user_society_id
+        user_society_id,
+        res
       );
 
       await res.status(200).json(result);

@@ -1,6 +1,6 @@
 const request = require("../../../auth3/decrypt_for_all_request");
 const error_m = require("../../../../utils/error");
-const check_user_request = require("../../../requests/user_request");
+const user_func = require("../../../requests/user_request");
 const utils = require("../../../requests/utils");
 const deCrypt = require("../../../auth3/decryt");
 const planning = require("../../../requests/planning_request");
@@ -42,7 +42,7 @@ module.exports = {
       delete request_veracity.sender;
 
       //<== create the user
-      let result = await check_user_request.create(request_veracity, res);
+      let result = await user_func.create(request_veracity, res);
 
       //> Create planning
       await planning.create(result._id);

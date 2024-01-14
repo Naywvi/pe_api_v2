@@ -1,7 +1,7 @@
 const format_query = require("../../../../utils/format_query");
 const error_m = require("../../../../utils/error");
 const is_valid = require("../../../auth3/auth_token");
-const rank_request = require("../../../requests/rank_request");
+const rank_func = require("../../../requests/rank_request");
 const check_auth = require("../../../auth3/auth");
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
       if (rank !== 99) throw error_m.unauthorized(res);
 
       //<== update the rank
-      const result = await rank_request.update(request);
+      const result = await rank_func.update(request, res);
 
       await res.status(200).json(result);
     } catch (error) {
