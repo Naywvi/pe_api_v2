@@ -8,7 +8,7 @@ const planningConfigSchema = new mongoose.Schema({
   }, // Référence à l'utilisateur
   cplanning_startDate: { type: Date, required: true }, // Date de début de planning
   cplanning_daysOff: [{ type: Date }], // Liste des jours de congé
-  cplanning_event,
+  cplanning_event: [{ type: Array }],
 });
 
 const PlanningConfigModel = mongoose.model(
