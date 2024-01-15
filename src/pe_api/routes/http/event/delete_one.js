@@ -5,7 +5,7 @@ const utils = require("../../../requests/utils");
 
 module.exports = {
     name: "/manage/planning/event/delete_one",
-    description: "Create event",
+    description: "Delete one event",
     method: "POST",
     run: async (req, res) => {
         try {
