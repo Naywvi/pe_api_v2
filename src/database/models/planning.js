@@ -7,7 +7,7 @@ const eventSchema = new mongoose.Schema({
   endDate: { type: Date, required: true },
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
-  contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Référence aux utilisateurs pour les contacts
+  contacts: [], // Référence aux utilisateurs pour les contacts
 });
 
 const scheduleSchema = new mongoose.Schema({
