@@ -19,8 +19,9 @@ module.exports = {
         delete user_request.sender;
 
         //> Add date format to the event
-        user_request.startDate = new Date(await date_parse(user_request.startDate)) // Assurez-vous que req.body.startDate est une date valide
-        user_request.endDate = new Date(await date_parse(user_request.endDate)) // Si endDate est toujours statique
+
+        user_request.startDate = new Date(user_request.startDate) // Assurez-vous que req.body.startDate est une date valide
+        user_request.endDate = new Date(user_request.endDate) // Si endDate est toujours statique
         planning.planning_events.push(user_request);
 
         //> Save the event
@@ -100,13 +101,13 @@ module.exports = {
 
         await Promise.all(events.map(async (event) => {
             const formattedEvent = {
-                start_date: event.startDate.toISOString().slice(0, 19).replace("T", " "), // Format "AAAA-MM-JJ HH:mm"
-                end_date: event.endDate.toISOString().slice(0, 19).replace("T", " "), // Format "AAAA-MM-JJ HH:mm"
-                text: event.text
+                start_date: event.startDate.toISOString().slice(0, 10) + ` ${event.startTime}`, // Format "AAAA-MM-JJ"
+                end_date: event.endDate.toISOString().slice(0, 10) + ` ${event.endTime}`, // Format "AAAA-MM-JJ"
+                text: event.text,
+                _id: event._id
             };
             formattedEvents.push(formattedEvent);
         }));
-
         return formattedEvents
     }
 }

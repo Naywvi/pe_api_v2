@@ -9,17 +9,18 @@ module.exports = {
     method: "POST",
     run: async (req, res) => {
         try {
+
             let request_veracity = await request.verify_request(req);
+            console.log(request_veracity)
+            // //<== check the rank of the user
+            // const rank = request_veracity.sender.user_rank_id;
+            // const rank_id = await utils.basic_rank_id();
+            // if (!rank_id.includes(rank)) throw await error_m.unauthorized();
 
-            //<== check the rank of the user
-            const rank = request_veracity.sender.user_rank_id;
-            const rank_id = await utils.basic_rank_id();
-            if (!rank_id.includes(rank)) throw await error_m.unauthorized();
+            // const result = await event_func.create(request_veracity);
+            // if (result === undefined) throw await error_m.not_found();
 
-            const result = await event_func.create(request_veracity);
-            if (result === undefined) throw await error_m.not_found();
-
-            await res.status(200).json(result);
+            // await res.status(200).json(result);
         } catch (error) {
             await res.status(error.code).json(error);
         } finally {

@@ -17,8 +17,6 @@ module.exports = {
 
             const result = await event_func.format(request_veracity);
             if (result === undefined) throw await error_m.not_found();
-
-            console.log(result);
             await res.status(200).json(result);
         } catch (error) {
             await res.status(error.code).json(error);
