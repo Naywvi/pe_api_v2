@@ -71,22 +71,37 @@ module.exports = {
 
         return { message: "All events deleted" };
     },
-    update: async (user_request) => {
+    update_new: async (user_request) => {
         //> Check if the user has a planning
-        const planning = await planningModel.findOne({ planning_user: user_request.sender._id });
-        if (planning === null) throw await error_m.not_found();
+        console.log(user_request)
+        // const planning = await planningModel.findOne({ planning_user: user_request.sender._id });
+        // if (planning === null) throw await error_m.not_found();
 
-        //> Check if the event exists
-        const event = planning.planning_events;
-        if (event === null) throw await error_m.not_found();
+        // //> Check if the event exists
+        // const event = planning.planning_events;
+        // if (event === null) throw await error_m.not_found();
 
-        //> Update the event
-        const update_event = await planningModel.updateOne({ planning_user: user_request.sender._id, "planning_events._id": user_request._id }, { $set: { "planning_events.$": user_request } });
-        if (update_event.modifiedCount === 0) throw await error_m.badly_formatted();
+        // //> Update the event
+        // const update_event = await planningModel.updateOne({ planning_user: user_request.sender._id, "planning_events.id_suspended": user_request.id_suspended }, { $set: { "planning_events.$": user_request } });
+        // if (update_event.modifiedCount === 0) throw await error_m.badly_formatted();
 
         return { message: "Event updated" };
     },
-    //   { start_date: "2023-04-16 10:00", end_date: "2023-04-16 12:00", text: "Front-end meeting" },
+    // update_old: async (user_request) => {
+    //     //> Check if the user has a planning
+    //     const planning = await planningModel.findOne({ planning_user: user_request.sender._id });
+    //     if (planning === null) throw await error_m.not_found();
+
+    //     //> Check if the event exists
+    //     const event = planning.planning_events;
+    //     if (event === null) throw await error_m.not_found();
+
+    //     //> Update the event
+    //     const update_event = await planningModel.updateOne({ planning_user: user_request.sender._id, "planning_events._id": user_request._id }, { $set: { "planning_events.$": user_request } });
+    //     if (update_event.modifiedCount === 0) throw await error_m.badly_formatted();
+
+    //     return { message: "Event updated" };
+    // },
     format: async (user_request) => {
 
         //> Check if the user has a planning

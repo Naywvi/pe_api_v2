@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({
+  suspended: { type: Boolean, required: true, default: true },
+  id_suspended: { type: String, required: true },
   title: { type: String, required: true },
   text: { type: String },
   startDate: { type: Date, required: true },
